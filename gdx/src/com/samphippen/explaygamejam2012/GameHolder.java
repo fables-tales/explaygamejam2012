@@ -24,8 +24,8 @@ public class GameHolder implements ApplicationListener {
     
 	@Override
 	public void create() {
-	    Texture t = new Texture(Gdx.files.internal("circle.png"));
-	    Cog c = new Cog(new Sprite(t), 37);
+        Texture t = new Texture(Gdx.files.internal("circle.png"));
+        Cog c = new Cog(new Sprite(t), 37);
 	    mCogs.add(c);
 	    mSpriteBatch = new SpriteBatch();
 	    float w = Gdx.graphics.getWidth();
