@@ -21,6 +21,9 @@ public class GameHolder implements ApplicationListener {
     private Vector2 mCameraOrigin = new Vector2(0, 0);
     private List<Cog> mCogs = new ArrayList<Cog>();
     private Tray mTray;
+    private boolean mHoldingCog = false;
+    private Cog mHeldCog;
+    private int mCogTime;
 
     @Override
     public void create() {
@@ -43,14 +46,14 @@ public class GameHolder implements ApplicationListener {
         return mCameraOrigin;
     }
 
-    @Override
-    public void render() {
+    public void draw() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
         mSpriteBatch.setProjectionMatrix(mCamera.combined);
         mSpriteBatch.setTransformMatrix(new Matrix4().translate(
                 -getCameraOrigin().x, -getCameraOrigin().y, 0));
+
         mSpriteBatch.begin();
         mTray.draw(mSpriteBatch);
         for (int i = 0; i < mCogs.size(); i++) {
@@ -59,6 +62,37 @@ public class GameHolder implements ApplicationListener {
         }
 
         mSpriteBatch.end();
+
+    }
+    
+    public void update() {
+        mCogTime += 1;
+        if (!mHoldingCog && Gdx.input.isTouched()) {
+            if (mTray.touchInside(Gdx.input.getX(), Gdx.graphics.getHeight()-Gdx.input.getY())) {
+                mHoldingCog = true;
+                mHeldCog = mTray.getCog();
+                mCogs.add(mHeldCog);
+                mHeldCog.setMouseTracking(true);
+                mCogTime = 0;
+            }
+        }
+        
+        if (mHoldingCog && Gdx.input.isTouched() && mCogTime > 8) {
+            mHeldCog.setMouseTracking(false);
+            mHeldCog = null;
+            mHoldingCog = false;
+        }
+        
+        for (int i = 0; i < mCogs.size(); i++) {
+            Cog c = mCogs.get(i);
+            c.update();
+        }
+    }
+
+    @Override
+    public void render() {
+        update();
+        draw();
     }
 
     @Override

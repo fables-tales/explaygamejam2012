@@ -16,6 +16,7 @@ public class Cog {
     private Sprite mSprite;
     // THIS MUST BE DEGREEEEES
     private float mAngle;
+    private boolean mMouseTracking = false;
 
     public Cog(Sprite s, float a) {
         mSprite = s;
@@ -28,6 +29,14 @@ public class Cog {
     }
 
     public void update() {
+        if (mMouseTracking) {
+            float x = Gdx.input.getX();
+            float y = Gdx.graphics.getHeight() - Gdx.input.getY();
+            mSprite.setPosition(x, y);
+        }
+    }
 
+    public void setMouseTracking(boolean b) {
+        mMouseTracking = b;
     }
 }
