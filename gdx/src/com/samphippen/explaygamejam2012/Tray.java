@@ -3,12 +3,22 @@ package com.samphippen.explaygamejam2012;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 public class Tray {
     public static final int MAX_COGS_EVER = 40;
+    
+    private Sprite mSprite;
 
     private List<Cog> mCogs = new ArrayList<Cog>();
 
     public Tray() {
+        
+        Texture t = new Texture(Gdx.files.internal("tray.png"));
+        mSprite = new Sprite(t);
         for (int i = 0; i < MAX_COGS_EVER; i++) {
             mCogs.add(Cog.getCog());
         }
@@ -20,5 +30,10 @@ public class Tray {
         }
 
         return null;
+    }
+    
+    public void draw(SpriteBatch sb) {
+        mSprite.setPosition(00, 0);
+        mSprite.draw(sb);
     }
 }
