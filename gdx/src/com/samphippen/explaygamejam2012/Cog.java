@@ -17,6 +17,7 @@ public class Cog {
     // THIS MUST BE DEGREEEEES
     private float mAngle;
     private boolean mMouseTracking = false;
+    private boolean mIsDrive = false;
 
     public Cog(Sprite s, float a) {
         mSprite = s;
@@ -34,9 +35,17 @@ public class Cog {
             float y = Gdx.graphics.getHeight() - Gdx.input.getY();
             mSprite.setPosition(x, y);
         }
+        
+        if (mIsDrive) {
+            mAngle += 1;
+        }
     }
 
     public void setMouseTracking(boolean b) {
         mMouseTracking = b;
+    }
+    
+    public void promoteToDrive() {
+        mIsDrive = true;
     }
 }

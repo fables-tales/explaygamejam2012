@@ -30,6 +30,7 @@ public class GameHolder implements ApplicationListener {
     public void create() {
         Texture t = new Texture(Gdx.files.internal("circle.png"));
         Cog c = new Cog(new Sprite(t), 37);
+        c.promoteToDrive();
         mTray = new Tray();
         mCogs.add(c);
         mSpriteBatch = new SpriteBatch();
