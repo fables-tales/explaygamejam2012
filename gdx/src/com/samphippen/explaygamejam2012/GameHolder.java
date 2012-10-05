@@ -15,64 +15,62 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
 public class GameHolder implements ApplicationListener {
-    
+
     private SpriteBatch mSpriteBatch;
     private Camera mCamera;
-    private Vector2 mCameraOrigin = new Vector2(0,0);
+    private Vector2 mCameraOrigin = new Vector2(0, 0);
     private List<Cog> mCogs = new ArrayList<Cog>();
     private Tray mTray;
-    
-    
-	@Override
-	public void create() {
+
+    @Override
+    public void create() {
         Texture t = new Texture(Gdx.files.internal("circle.png"));
         Cog c = new Cog(new Sprite(t), 37);
         mTray = new Tray();
-	    mCogs.add(c);
-	    mSpriteBatch = new SpriteBatch();
-	    float w = Gdx.graphics.getWidth();
+        mCogs.add(c);
+        mSpriteBatch = new SpriteBatch();
+        float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
         mCamera = new OrthographicCamera(w, h);
-        mCameraOrigin.set(w/2, h/2);
-	}
+        mCameraOrigin.set(w / 2, h / 2);
+    }
 
-	@Override
-	public void dispose() {
-	}
-	
-	private Vector2 getCameraOrigin() {
-	    return mCameraOrigin;
-	}
+    @Override
+    public void dispose() {
+    }
 
-	@Override
-	public void render() {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-	
-		
-		mSpriteBatch.setProjectionMatrix(mCamera.combined);
-		mSpriteBatch.setTransformMatrix(new Matrix4().translate(-getCameraOrigin().x,
-                -getCameraOrigin().y, 0));
-		mSpriteBatch.begin();
-		mTray.draw(mSpriteBatch);
-		for (int i = 0; i < mCogs.size(); i++) {
+    private Vector2 getCameraOrigin() {
+        return mCameraOrigin;
+    }
+
+    @Override
+    public void render() {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+        mSpriteBatch.setProjectionMatrix(mCamera.combined);
+        mSpriteBatch.setTransformMatrix(new Matrix4().translate(
+                -getCameraOrigin().x, -getCameraOrigin().y, 0));
+        mSpriteBatch.begin();
+        mTray.draw(mSpriteBatch);
+        for (int i = 0; i < mCogs.size(); i++) {
             Cog c = mCogs.get(i);
             c.draw(mSpriteBatch);
         }
-		
-		mSpriteBatch.end();
-	}
 
-	@Override
-	public void resize(int width, int height) {
-	    
-	}
+        mSpriteBatch.end();
+    }
 
-	@Override
-	public void pause() {
-	}
+    @Override
+    public void resize(int width, int height) {
 
-	@Override
-	public void resume() {
-	}
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
 }
