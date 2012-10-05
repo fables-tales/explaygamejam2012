@@ -64,11 +64,12 @@ public class GameHolder implements ApplicationListener {
         mSpriteBatch.end();
 
     }
-    
+
     public void update() {
         mCogTime += 1;
         if (!mHoldingCog && Gdx.input.isTouched()) {
-            if (mTray.touchInside(Gdx.input.getX(), Gdx.graphics.getHeight()-Gdx.input.getY())) {
+            if (mTray.touchInside(Gdx.input.getX(), Gdx.graphics.getHeight()
+                    - Gdx.input.getY())) {
                 mHoldingCog = true;
                 mHeldCog = mTray.getCog();
                 mCogs.add(mHeldCog);
@@ -76,13 +77,13 @@ public class GameHolder implements ApplicationListener {
                 mCogTime = 0;
             }
         }
-        
+
         if (mHoldingCog && Gdx.input.isTouched() && mCogTime > 8) {
             mHeldCog.setMouseTracking(false);
             mHeldCog = null;
             mHoldingCog = false;
         }
-        
+
         for (int i = 0; i < mCogs.size(); i++) {
             Cog c = mCogs.get(i);
             c.update();
