@@ -1,5 +1,8 @@
 package com.samphippen.explaygamejam2012;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -13,16 +16,17 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GameHolder implements ApplicationListener {
     
-    private Sprite mSprite;
     private SpriteBatch mSpriteBatch;
     private Camera mCamera;
     private Vector2 mCameraOrigin = new Vector2(0,0);
+    private List<Cog> mCogs = new ArrayList<Cog>();
     
     
 	@Override
 	public void create() {
 	    Texture t = new Texture(Gdx.files.internal("circle.png"));
-	    mSprite = new Sprite(t);
+	    Cog c = new Cog(new Sprite(t), 37);
+	    mCogs.add(c);
 	    mSpriteBatch = new SpriteBatch();
 	    float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
@@ -43,12 +47,15 @@ public class GameHolder implements ApplicationListener {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 	
-		mSprite.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight()-Gdx.input.getY());
+		
 		mSpriteBatch.setProjectionMatrix(mCamera.combined);
 		mSpriteBatch.setTransformMatrix(new Matrix4().translate(-getCameraOrigin().x,
                 -getCameraOrigin().y, 0));
 		mSpriteBatch.begin();
-		mSprite.draw(mSpriteBatch);
+		for (int i = 0; i < mCogs.size(); i++) {
+            Cog c = mCogs.get(i);
+            c.draw(mSpriteBatch);
+        }
 		mSpriteBatch.end();
 	}
 
