@@ -18,6 +18,7 @@ public class Cog {
     private float mAngle;
     private boolean mMouseTracking = false;
     private boolean mIsDrive = false;
+	public boolean mVisited;
 
     public Cog(Sprite s, float a) {
         mSprite = s;

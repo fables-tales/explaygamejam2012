@@ -19,12 +19,13 @@ public class GameHolder implements ApplicationListener {
 
     private SpriteBatch mSpriteBatch;
     private Camera mCamera;
-    private Vector2 mCameraOrigin = new Vector2(0, 0);
-    private List<Cog> mCogs = new ArrayList<Cog>();
+    private Vector2 mCameraOrigin = new Vector2(0, 0);    
     private Tray mTray;
     private boolean mHoldingCog = false;
     private Cog mHeldCog;
     private int mCogTime;
+    private CogGraph mGraph;
+    
 
     @Override
     public void create() {
@@ -32,7 +33,9 @@ public class GameHolder implements ApplicationListener {
         Cog c = new Cog(new Sprite(t), 37);
         c.promoteToDrive();
         mTray = new Tray();
-        mCogs.add(c);
+        // mCogs.add(c);
+        mGraph = new CogGraph(c); 
+        
         mSpriteBatch = new SpriteBatch();
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
@@ -58,8 +61,8 @@ public class GameHolder implements ApplicationListener {
 
         mSpriteBatch.begin();
         mTray.draw(mSpriteBatch);
-        for (int i = 0; i < mCogs.size(); i++) {
-            Cog c = mCogs.get(i);
+        for (int i = 0; i < mGraph.mCogs.size(); i++) {
+            Cog c = mGraph.mCogs.get(i);
             c.draw(mSpriteBatch);
         }
 
@@ -74,7 +77,7 @@ public class GameHolder implements ApplicationListener {
                     - Gdx.input.getY())) {
                 mHoldingCog = true;
                 mHeldCog = mTray.getCog();
-                mCogs.add(mHeldCog);
+                mGraph.mCogs.add(mHeldCog);
                 mHeldCog.setMouseTracking(true);
                 mCogTime = 0;
             }
@@ -87,8 +90,8 @@ public class GameHolder implements ApplicationListener {
             mHoldingCog = false;
         }
 
-        for (int i = 0; i < mCogs.size(); i++) {
-            Cog c = mCogs.get(i);
+        for (int i = 0; i < mGraph.mCogs.size(); i++) {
+            Cog c = mGraph.mCogs.get(i);
             c.update();
         }
     }
