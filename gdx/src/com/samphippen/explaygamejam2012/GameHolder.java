@@ -7,6 +7,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -78,7 +79,8 @@ public class GameHolder implements ApplicationListener {
             }
         }
 
-        if (mHoldingCog && Gdx.input.isTouched() && mCogTime > 8) {
+        if (mHoldingCog && !Gdx.input.isTouched()) {
+            System.out.println("stopping");
             mHeldCog.setMouseTracking(false);
             mHeldCog = null;
             mHoldingCog = false;
