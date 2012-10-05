@@ -20,12 +20,14 @@ public class GameHolder implements ApplicationListener {
     private Camera mCamera;
     private Vector2 mCameraOrigin = new Vector2(0,0);
     private List<Cog> mCogs = new ArrayList<Cog>();
+    private Tray mTray;
     
     
 	@Override
 	public void create() {
         Texture t = new Texture(Gdx.files.internal("circle.png"));
         Cog c = new Cog(new Sprite(t), 37);
+        mTray = new Tray();
 	    mCogs.add(c);
 	    mSpriteBatch = new SpriteBatch();
 	    float w = Gdx.graphics.getWidth();
@@ -52,10 +54,12 @@ public class GameHolder implements ApplicationListener {
 		mSpriteBatch.setTransformMatrix(new Matrix4().translate(-getCameraOrigin().x,
                 -getCameraOrigin().y, 0));
 		mSpriteBatch.begin();
+		mTray.draw(mSpriteBatch);
 		for (int i = 0; i < mCogs.size(); i++) {
             Cog c = mCogs.get(i);
             c.draw(mSpriteBatch);
         }
+		
 		mSpriteBatch.end();
 	}
 
