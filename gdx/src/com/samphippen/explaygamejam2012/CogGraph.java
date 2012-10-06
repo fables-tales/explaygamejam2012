@@ -25,7 +25,7 @@ public class CogGraph {
         float h = Gdx.graphics.getHeight();
         
         Texture t = ResourceManager.get("bigcog");
-		mDrive = new Cog(new Sprite(t), 0, 1900);
+		mDrive = new Cog(new Sprite(t), 0, 0, 1900);
 		mDrive.promoteToDrive();     
 		
 		mDrive.setCenterX(800 * 0.5f);

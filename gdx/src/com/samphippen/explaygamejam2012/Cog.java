@@ -13,7 +13,7 @@ public class Cog {
 	static int mCogID = 0;
 	
     public static Cog getCog(int i) {
-        Cog c = new Cog(new Sprite(ResourceManager.get("cog" + i)), 37, mCogID++);
+        Cog c = new Cog(new Sprite(ResourceManager.get("cog" + i)), i, 37, mCogID++);
         return c;
     }
 
@@ -31,11 +31,13 @@ public class Cog {
 	public int CogID = 0;
 	
 	// we need this for refactoring the graph (probably)
-	public List<Cog> mConnections = new ArrayList<Cog>();	
+	public List<Cog> mConnections = new ArrayList<Cog>();
+	public int mSize;	
 
 	
-    public Cog(Sprite s, float a, int id) {
+    public Cog(Sprite s, int size, float a, int id) {    	
         mSprite = s;
+        mSize = size; 
         mAngle = a;
         CogID = id; 
     }

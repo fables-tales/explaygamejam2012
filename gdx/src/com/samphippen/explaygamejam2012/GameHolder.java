@@ -108,10 +108,15 @@ public class GameHolder implements ApplicationListener {
         mSpriteBatch.begin();
         mBackgroundSprite.draw(mSpriteBatch);
 
+        mGraph.mDrive.draw(mSpriteBatch);
+        mGraph.mScrew.draw(mSpriteBatch);
+        
+        mTray.preDraw(mSpriteBatch);
         
         for (int i = 0; i < mGraph.mCogs.size(); i++) {
             Cog c = mGraph.mCogs.get(i);
-            c.draw(mSpriteBatch);
+            
+            if (c.getIsFixed() == false) c.draw(mSpriteBatch);
         }
         
         mRackSprite.draw(mSpriteBatch);
@@ -222,6 +227,7 @@ public class GameHolder implements ApplicationListener {
         mLogic.rollDownTick();
     }
 
+    /* 
     private void createTestGraph() {
 
         float w = Gdx.graphics.getWidth();
@@ -309,7 +315,8 @@ public class GameHolder implements ApplicationListener {
 
         // mGraph.removeCog(cog2);
     }
-
+	*/ 
+    
     private void doAnimation() {
         mMaskButtonPressed = false;
         float oldScrewAngle = mGraph.mScrew.mAngle;
@@ -379,14 +386,30 @@ public class GameHolder implements ApplicationListener {
                     (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
 
                 System.out.println("Selecting cog");
-
-                mHoldingCog = true;
-                mHeldCog = mTray.getCog();
-                mGraph.addCog(mHeldCog);
-                mHeldCog.setMouseTracking(true);
-                mCogTime = 0;
-
-                mLogic.playerSelectedCog(mHeldCog, false);
+                
+                int size = 5;
+                
+                int x = Gdx.input.getX() * 2; 
+                
+                int rb = 121, b = 326, m = 498, s = 633, t = 732; 
+                
+                if (x < rb + ((b - rb) / 2)) size = 5;
+                else if (x < b + ((m - b) / 2)) size = 4; 
+                else if (x < m + ((s - m) / 2)) size = 3;
+                else if (x < s + ((t - s) / 2)) size = 2;
+                else size = 1;
+                	                               
+                mHeldCog = mTray.getCog(size);
+                
+                if (mHeldCog != null) {
+                	mHoldingCog = true;
+                
+	                mGraph.addCog(mHeldCog);
+	                mHeldCog.setMouseTracking(true);
+	                mCogTime = 0;
+	
+	                mLogic.playerSelectedCog(mHeldCog, false);
+                }
             } else {
                 mHeldCog = mGraph.touchOnCog(Gdx.input.getX() * 2,
                         (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2);
