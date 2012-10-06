@@ -2,6 +2,7 @@ package com.samphippen.explaygamejam2012;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,14 +13,17 @@ public class Tray {
     public static final int MAX_COGS_EVER = 40;
 
     private Sprite mSprite;
+    private Sprite mWheelCoverSprite;
 
     private List<Cog> mCogs = new ArrayList<Cog>();
+    private static Random sRng = new Random();
 
     public Tray() {
 
         mSprite = new Sprite(ResourceManager.get("tray"));
+        mWheelCoverSprite = new Sprite(ResourceManager.get("wheelcover"));
         for (int i = 0; i < MAX_COGS_EVER; i++) {
-            mCogs.add(Cog.getCog());
+            mCogs.add(Cog.getCog(sRng.nextInt(5)+1));
         }
     }
 
@@ -47,6 +51,8 @@ public class Tray {
     }
 
     public void draw(SpriteBatch sb) {
+        mWheelCoverSprite.setPosition(0, -150);
+        mWheelCoverSprite.draw(sb);
         mSprite.setPosition(00, 0);
         mSprite.draw(sb);
     }
