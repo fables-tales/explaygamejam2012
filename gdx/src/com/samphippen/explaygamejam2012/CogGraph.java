@@ -40,7 +40,8 @@ public class CogGraph {
 		mScrew.promoteToScrew();     
 		
 		mScrew.setCenterX(800 * 0.5f);
-		mScrew.setCenterY((1280-75) - 223);        
+		mScrew.setCenterY((1280-75) - 223);
+		//mScrew.setCenterY((1280-75) - 123);  
 		mScrew.fixToGrid(); 
 
 		mCogs.add(mScrew);
