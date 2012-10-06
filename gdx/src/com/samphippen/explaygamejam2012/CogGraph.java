@@ -391,6 +391,7 @@ public class CogGraph {
 
 			return true;
 		} else {
+		    SoundSystem.playWithDelay("CogsJammed", 3900);
 			return false;
 		}
 	}
