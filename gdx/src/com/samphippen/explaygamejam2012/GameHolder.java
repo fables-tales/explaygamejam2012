@@ -273,8 +273,6 @@ public class GameHolder implements ApplicationListener {
     	mLogic.mTotalDriveToScrew += oldScrewAngle - newScrewAngle; 
     	
         mLogic.animationTick();
-        
-        
     }
 
     private void doMovingEvents() {
