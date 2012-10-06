@@ -11,10 +11,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public class CogGraph {
 
 	private HashMap<Cog, List<Cog>> mGraph = new HashMap<Cog, List<Cog>>();
+	
 	public Cog mDrive;
+	public Cog mScrew;
+	
 	public List<Cog> mCogs = new ArrayList<Cog>();
-	private List<Cog> mPossibleConnetions = new ArrayList<Cog>();
-	private Cog mScrew;
+	private List<Cog> mPossibleConnetions = new ArrayList<Cog>();	
 
 	public CogGraph() {
 

@@ -1,6 +1,7 @@
 package com.samphippen.explaygamejam2012;
 
 public class GameLogic {	
+	public static float MAX_DRIVE_TO_SCREW = 360f; 
 	
 	public TurnStage mState = TurnStage.GameStart; 	
 	public Cog mSeletedCog;
@@ -8,9 +9,10 @@ public class GameLogic {
 	public float mCogOriginalX;
 	public float mCogOriginalY; 
 	public int mPlayerID; 
-	public int mAnimationFrame = 0;
 	
 	public static final GameLogic sInstance = new GameLogic(); 
+	public int mAnimationFrame = 0; 
+	public float mTotalDriveToScrew;
 	
 	private void resetMove() { 
 		mCogWasFromBoard = false; 
@@ -22,6 +24,7 @@ public class GameLogic {
 	public void newGame() { 
 		mState = TurnStage.ClearGameState; 
 		mPlayerID = 1; 
+		mTotalDriveToScrew = 0; 
 		
 		resetMove();
 	}
@@ -29,6 +32,7 @@ public class GameLogic {
 	public void sartGame() { 
 		mState = TurnStage.GameStart; 
 		mPlayerID = 1; 
+		mTotalDriveToScrew = 0; 
 		
 		resetMove();
 	}
@@ -103,8 +107,18 @@ public class GameLogic {
 	
 	public void animationTick() {
 		mAnimationFrame++; 
-		
-		if (mAnimationFrame > 120) { 
+
+		if (mTotalDriveToScrew >= MAX_DRIVE_TO_SCREW) {
+			// player 1 wins!
+			System.out.println("Player 1 WINS!!!!"); 
+			mState = TurnStage.GameOver; 
+		}
+		else if (mTotalDriveToScrew <= -MAX_DRIVE_TO_SCREW) {
+			// player 1 wins!
+			System.out.println("Player 2 WINS!!!!"); 
+			mState = TurnStage.GameOver; 
+		}
+		else if (mAnimationFrame > 120) { 
 			mState = TurnStage.NextPlayer; 
 		}
 	}
