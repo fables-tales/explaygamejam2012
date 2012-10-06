@@ -447,12 +447,11 @@ public class GameHolder implements ApplicationListener {
     }
 
     private int getGridX(int x) {
-        return x / (800 / GridManager.SQUARES_PER_ROW);
+        return mGridManager.getGridX(x);
     }
 
     private int getGridY(int y) {
-        // TODO Auto-generated method stub
-        return y / (1280 / GridManager.NUMBER_OF_ROWS);
+        return mGridManager.getGridY(y);
     }
 
     private boolean inputInGrid(int x, int y) {

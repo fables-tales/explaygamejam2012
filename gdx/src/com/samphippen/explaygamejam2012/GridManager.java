@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class GridManager {
 
     public static final int SQUARES_PER_ROW = 5;
-    public static final int NUMBER_OF_ROWS = 9;
+    public static final int NUMBER_OF_ROWS = 5;
 
     private List<Sprite> mGridSprites1 = new ArrayList<Sprite>();
     private List<Sprite> mGridSprites2 = new ArrayList<Sprite>();
@@ -22,6 +22,10 @@ public class GridManager {
     private int mTouchedSquares = 0;
     private int mSquareTouchX;
     private int mSquareTouchY;
+    private int mHeight = 1280 - (300+300);
+    private int mWidth = 720;
+    private int mYOffset = 350;
+    private int mXOffset = 40;
 
     public GridManager() {
         for (int y = 0; y < NUMBER_OF_ROWS; y++) {
@@ -33,15 +37,12 @@ public class GridManager {
     }
 
     private Sprite makeSprite(int x, int y, int i) {
-        Texture t = new Texture(Gdx.files.internal("block.png"));
+        Texture t = new Texture(Gdx.files.internal("mask.png"));
         Sprite s = new Sprite(t);
-        int height = 1280 - 64 * 2;
-        int yOffset = 64;
-        int width = 800;
 
-        s.setPosition(width / SQUARES_PER_ROW * x, height / NUMBER_OF_ROWS * y
-                + yOffset);
-        s.setSize(width / SQUARES_PER_ROW, height / NUMBER_OF_ROWS);
+        s.setPosition(mWidth / SQUARES_PER_ROW * x + mXOffset, mHeight / NUMBER_OF_ROWS * y
+                + mYOffset);
+        s.setSize(mWidth / SQUARES_PER_ROW, mHeight / NUMBER_OF_ROWS);
         s.setColor(1, i, 1, 0);
         return s;
     }
@@ -201,6 +202,19 @@ public class GridManager {
         List<Sprite> s = getCurrentGridSprites(1-playerID);
         int gridIndex = i + j*SQUARES_PER_ROW;
         return s.get(gridIndex).getColor().a > 0.993;
+    }
+
+    public int getGridX(int x) {
+        float pixelsPerSquare = mWidth/SQUARES_PER_ROW;
+        float pixelsAccross = (x-mXOffset);
+        return (int)(pixelsAccross/pixelsPerSquare);
+        
+    }
+    
+    public int getGridY(int y) {
+        float pixelsPerSquare = mHeight/NUMBER_OF_ROWS;
+        float pixelsAccross = (y-mYOffset);
+        return (int)(pixelsAccross/pixelsPerSquare);
     }
 
 }
