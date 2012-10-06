@@ -116,9 +116,9 @@ public class GameHolder implements ApplicationListener {
     }
 
     public void draw() {
+        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glClearColor((1f / 255f) * 155f, (1f / 255f) * 121f,
                 (1f / 255f) * 71f, 1);
-        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
         Matrix4 traslate = new Matrix4().translate(-getCameraOrigin().x,
                 -getCameraOrigin().y, 0);
