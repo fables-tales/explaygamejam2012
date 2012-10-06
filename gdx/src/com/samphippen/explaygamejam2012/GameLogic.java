@@ -111,6 +111,7 @@ public class GameLogic {
 		{
 			// the cog started in the tray and ended on the board 
 			mState = TurnStage.Animating;
+			SoundSystem.playBetweenMusic();
 		}
 		
 		resetMove(); 
@@ -146,7 +147,7 @@ public class GameLogic {
 			mAnimationFrame = 0; 
 		}
 		else if (mAnimationFrame > 360) { 
-			mState = TurnStage.RollDown;
+			mState = TurnStage.RollDownStart;
 		}
 	}
 	
@@ -158,19 +159,21 @@ public class GameLogic {
         mRollDownFrame++;
         
         float t = (mRollDownFrame-60)/2;
-        float y = 2*(t*t); 
+        float y = 2*(t*t);
+        mRollDownSprite.setPosition(0, y);
         
         if (mRollDownFrame == 60) {
             mPlayerID = mPlayerID == 0 ? 1 : 0;
-        }
-        
-        
-        mRollDownSprite.setPosition(0, y);
-        
-        if (mRollDownFrame > 120){
-            
+            mState = TurnStage.RollDownWaiting;
+        } else if (mRollDownFrame == 120) {
             mState = TurnStage.NextPlayer;
         }
+        
+    }
+    
+    public void rollDownWaitingTouched() {
+        mState = TurnStage.RollDownEnd;
+
     }
 }
 
