@@ -201,6 +201,10 @@ public class GridManager {
     public boolean touchInBlock(int i, int j, int playerID) {
         List<Sprite> s = getCurrentGridSprites(1-playerID);
         int gridIndex = i + j*SQUARES_PER_ROW;
+        
+        if (gridIndex < 0 || gridIndex >= s.size())
+        	return false; 
+        
         return s.get(gridIndex).getColor().a > 0.993;
     }
 
