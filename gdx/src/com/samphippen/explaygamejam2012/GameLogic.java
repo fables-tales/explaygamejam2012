@@ -57,7 +57,8 @@ public class GameLogic {
 		resetMove();
 	}
 	
-	public void newTurn() { 
+	public void newTurn() {
+	    SoundSystem.playTurnMusic();
 		mAnimationFrame = 0;
 		mRollDownFrame = 0;
 		
@@ -80,6 +81,7 @@ public class GameLogic {
 	
 	public void placedGrid() {
 	    mState = TurnStage.Animating;
+	    SoundSystem.playBetweenMusic();
 	    resetMove();
 	}
 	
@@ -96,7 +98,8 @@ public class GameLogic {
 			else 
 			{
 				// the cog has been moved
-				mState = TurnStage.Animating; 
+				mState = TurnStage.Animating;
+				SoundSystem.playBetweenMusic();
 			}
 		}
 		else if (!mCogWasFromBoard && !ontoBoard)
@@ -144,7 +147,6 @@ public class GameLogic {
 		}
 		else if (mAnimationFrame > 360) { 
 			mState = TurnStage.RollDown;
-			mPlayerID = mPlayerID == 0 ? 1 : 0;
 		}
 	}
 	
@@ -157,6 +159,10 @@ public class GameLogic {
         
         float t = (mRollDownFrame-60)/2;
         float y = 2*(t*t); 
+        
+        if (mRollDownFrame == 60) {
+            mPlayerID = mPlayerID == 0 ? 1 : 0;
+        }
         
         
         mRollDownSprite.setPosition(0, y);
