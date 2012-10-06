@@ -54,6 +54,7 @@ public class GridManager {
             } else if (mTouchedSquares == 1) {
                 if (this.isCandidateSquare(gridX, gridY)) {
                     this.block(gridX, gridY, player);
+                    
                 } else {
                     this.hideCandidateSquares();
                 }

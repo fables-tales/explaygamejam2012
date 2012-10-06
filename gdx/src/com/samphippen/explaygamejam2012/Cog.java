@@ -23,7 +23,7 @@ public class Cog {
     private boolean mIsDrive = false; 
 	private boolean mIsScrew = false;  
 	public boolean mVisited;
-	private int mNextAngle;
+	private float mNextAngle;
 	public boolean mBindingsReversed;
 	public int CogID = 0;
 	
@@ -109,7 +109,7 @@ public class Cog {
 	}
 
 	public void rotate(boolean dir) {
-		mNextAngle += dir ? -1 : 1; 	
+		mNextAngle = mAngle + (dir ? -1f : 1f); 	
 	}
 	
 	public void applyRotation() { 
