@@ -29,6 +29,8 @@ public class ResourceManager {
         mTextures.put("bigcog", new Texture(Gdx.files.internal("maincog.png")));
         mTextures.put("wheelcover",
                 new Texture(Gdx.files.internal("wheelcover.png")));
+        
+        mTextures.put("splash", new Texture(Gdx.files.internal("startup.png")));
 
         for (String key : mTextures.keySet()) {
             mTextures.get(key).setFilter(TextureFilter.Linear,

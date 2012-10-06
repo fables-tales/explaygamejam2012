@@ -36,10 +36,12 @@ public class GameHolder implements ApplicationListener {
     private Sprite mPlayer1Wins;
     private Sprite mPlayer2Wins;
     private Sprite mBackgroundSprite;
+    private Sprite mSplashSprite;
 
     private boolean mRunTurns = true;
     private SpriteBatch mSpriteBatch;
     private Tray mTray;
+    private boolean mStartupScreen = true;
 
     @Override
     public void create() {
@@ -60,7 +62,8 @@ public class GameHolder implements ApplicationListener {
         mBackgroundSprite = new Sprite(ResourceManager.get("background"));
         mBackgroundSprite.setPosition(0, -70);
         
-        
+        t = ResourceManager.get("splash");
+        mSplashSprite = new Sprite(t);
 
         mGridManager = new GridManager();
         mSpriteBatch = new SpriteBatch();
@@ -108,12 +111,11 @@ public class GameHolder implements ApplicationListener {
         mSpriteBatch.begin();
         mBackgroundSprite.draw(mSpriteBatch);
 
-        
         for (int i = 0; i < mGraph.mCogs.size(); i++) {
             Cog c = mGraph.mCogs.get(i);
             c.draw(mSpriteBatch);
         }
-        
+
         mRackSprite.draw(mSpriteBatch);
         mTray.draw(mSpriteBatch);
         mGridManager.drawCurrentPlayer(mSpriteBatch, mLogic.mPlayerID);
@@ -151,8 +153,23 @@ public class GameHolder implements ApplicationListener {
 
     @Override
     public void render() {
-        update();
-        draw();
+        if (!mStartupScreen) {
+            update();
+            draw();
+        } else {
+            drawStartupScreen();
+        }
+    }
+
+    private void drawStartupScreen() {
+        if (Gdx.input.isTouched()) {
+            mStartupScreen = false;
+        }
+        
+        mSpriteBatch.begin();
+        mSplashSprite.draw(mSpriteBatch);
+        mSpriteBatch.end();
+        
     }
 
     @Override
