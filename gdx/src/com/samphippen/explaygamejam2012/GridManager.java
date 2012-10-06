@@ -11,8 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GridManager {
 
-    public static final int SQUARES_PER_ROW = 3;
-    public static final int NUMBER_OF_ROWS = 6;
+    public static final int SQUARES_PER_ROW = 5;
+    public static final int NUMBER_OF_ROWS = 9;
 
     private List<Sprite> mGridSprites1 = new ArrayList<Sprite>();
     private List<Sprite> mGridSprites2 = new ArrayList<Sprite>();
