@@ -21,7 +21,7 @@ public class GameHolder implements ApplicationListener {
     private Vector2 mCameraOrigin = new Vector2(0, 0);
 
     private int mCogTime;
-    private boolean mDebugging = true;
+    private boolean mDebugging = false;
     private ShapeRenderer mDebugShapeRenderer;
     private CogGraph mGraph;
     private GridManager mGridManager;
@@ -101,7 +101,7 @@ public class GameHolder implements ApplicationListener {
     }
 
     public void draw() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor((1f / 255f) * 155f, (1f / 255f) * 121f, (1f / 255f) * 71f, 1);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
         Matrix4 traslate = new Matrix4().translate(-getCameraOrigin().x,
