@@ -83,8 +83,8 @@ public class Cog {
 
     public void update() {
         if (mMouseTracking) {
-            float x = Gdx.input.getX();
-            float y = Gdx.graphics.getHeight() - Gdx.input.getY();
+            float x = Gdx.input.getX()*2;
+            float y = (Gdx.graphics.getHeight() - Gdx.input.getY())*2;
             
             setCenterX(x); 
             setCenterY(y); 

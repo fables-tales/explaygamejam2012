@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -26,7 +27,8 @@ public class GameHolder implements ApplicationListener {
     private CogGraph mGraph;
 	private boolean mDebugging = true;
     private boolean mRunTurns = true; 
-    private GameLogic mLogic = new GameLogic(); 
+    private GameLogic mLogic = new GameLogic();
+    private Sprite mRackSprite = new Sprite();
     
     @Override
     public void create() {
@@ -34,6 +36,8 @@ public class GameHolder implements ApplicationListener {
        
     	mTray = new Tray();
         mGraph = new CogGraph(); 
+        mRackSprite = new Sprite();
+        
         
         mSpriteBatch = new SpriteBatch();
         mSpriteBatch.enableBlending();         
@@ -176,7 +180,7 @@ public class GameHolder implements ApplicationListener {
         	mGraph.renderDebugLines(mDebugShapeRenderer); 
         	
         	mDebugShapeRenderer.end();
-        }        
+        }
     }
 
     public void update() {
@@ -206,7 +210,7 @@ public class GameHolder implements ApplicationListener {
     	
         mCogTime += 1;
         if (!mHoldingCog && Gdx.input.isTouched()) {
-            if (mTray.touchInside(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY())) {
+            if (mTray.touchInside(Gdx.input.getX()*2, (Gdx.graphics.getHeight() - Gdx.input.getY())*2)) {
             	
             	System.out.println("Selecting cog");
             	
@@ -217,7 +221,7 @@ public class GameHolder implements ApplicationListener {
                 mCogTime = 0;
             }
             else { 
-            	mHeldCog = mGraph.touchOnCog(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY()); 
+            	mHeldCog = mGraph.touchOnCog(Gdx.input.getX()*2, (Gdx.graphics.getHeight() - Gdx.input.getY())*2); 
             	
             	if (mHeldCog != null) {
             		System.out.println("Picking up cog");
