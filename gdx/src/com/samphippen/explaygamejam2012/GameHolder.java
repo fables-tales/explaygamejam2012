@@ -1,16 +1,10 @@
 package com.samphippen.explaygamejam2012;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -45,9 +39,9 @@ public class GameHolder implements ApplicationListener {
         mSpriteBatch.enableBlending();         
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
-        mCamera = new OrthographicCamera(w, h);
-        mCameraOrigin.set(w / 2, h / 2);
-                
+        mCamera = new OrthographicCamera(800, 1280);
+        mCameraOrigin.set(400, 1280/2);
+          
         mDebugShapeRenderer = new ShapeRenderer(); 
         
         mLastCog = mGraph.mDrive;
