@@ -56,37 +56,46 @@ public class GridManager {
                     this.block(gridX, gridY, player);
                     
                 } else {
-                    this.hideCandidateSquares();
+                    this.hideCandidateSquares(player);
                 }
             }
         }
     }
 
-    public void hideCandidateSquares() {
+    public void hideCandidateSquares(int currentPlayerID) {
         int gridIndex;
         mTouchedSquares = 0;
         for (int x = 0; x < SQUARES_PER_ROW; x++) {
             int y = mSquareTouchY;
             gridIndex = x + y * SQUARES_PER_ROW;
-            mGridSprites.get(gridIndex).setColor(1, 1, 1, 0.0f);
+            int gridPlayer = mGridPlayer.get(gridIndex);
+            if (gridPlayer == currentPlayerID) {
+                mGridSprites.get(gridIndex).setColor(1, 1, 1, 0.0f);
+            }
         }
 
         for (int y = 0; y < NUMBER_OF_ROWS; y++) {
             int x = mSquareTouchX;
             gridIndex = x + y * SQUARES_PER_ROW;
-            mGridSprites.get(gridIndex).setColor(1, 1, 1, 0.0f);
+            int gridPlayer = mGridPlayer.get(gridIndex);
+            if (gridPlayer == currentPlayerID) {
+                mGridSprites.get(gridIndex).setColor(1, 1, 1, 0.0f);
+            }
+            
         }
         
     }
 
     private void block(int gridX, int gridY, int currentPlayer) {
         assert isCandidateSquare(gridX, gridY);
-        this.hideCandidateSquares();
+        this.hideCandidateSquares(currentPlayer);
         if (gridY == mSquareTouchY) {
             this.blockRow(currentPlayer);
         } else if (gridX == mSquareTouchX) {
             this.blockColumn(currentPlayer);
         }
+        
+        GameLogic.sInstance.placedGrid();
     }
 
     private void blockColumn(int currentPlayer) {
@@ -140,7 +149,8 @@ public class GridManager {
     }
 
     public void clearPlayer(int mPlayerID) {
-        this.hideCandidateSquares();
+        System.out.println(mPlayerID);
+        this.hideCandidateSquares(mPlayerID);
         for (int y = 0; y < NUMBER_OF_ROWS; y++) {
             for (int x = 0; x < SQUARES_PER_ROW; x++) {
                 int gridIndex = x + y * SQUARES_PER_ROW;
