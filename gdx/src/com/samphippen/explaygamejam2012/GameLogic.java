@@ -112,7 +112,9 @@ public class GameLogic {
 		else if (mCogWasFromBoard && !ontoBoard)
 		{
 			// the cog started on the board and ended in the tray
-			mState = TurnStage.WaitingForPlayer; 			
+			mState = TurnStage.Animating;
+			SoundSystem.playBetweenMusic();
+			SoundSystem.playWithDelay("hasplaced", 100);			
 		}
 		else 
 		{

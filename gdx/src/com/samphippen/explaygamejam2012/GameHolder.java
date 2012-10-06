@@ -21,7 +21,7 @@ public class GameHolder implements ApplicationListener {
     private Vector2 mCameraOrigin = new Vector2(0, 0);
 
     private int mCogTime;
-    private boolean mDebugging = true;
+    private boolean mDebugging = false;
     private ShapeRenderer mDebugShapeRenderer;
     private CogGraph mGraph;
     private GridManager mGridManager;
