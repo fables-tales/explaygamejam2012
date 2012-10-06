@@ -59,14 +59,14 @@ public class GameHolder implements ApplicationListener {
         Texture t = new Texture(Gdx.files.internal("rack.png"));
         mRackSprite = new Sprite(t);
         mRackSprite.setPosition(800 / 2 - mRackSprite.getWidth() / 2,
-                1280 - mRackSprite.getHeight());
+                (1280-75) - mRackSprite.getHeight());
 
         t = new Texture(Gdx.files.internal("rackholder.png"));
 
         mRackHolderSprite = new Sprite(t);
         mRackHolderSprite.setPosition(
                 800 / 2 - mRackHolderSprite.getWidth() / 2,
-                1280 - mRackHolderSprite.getHeight());
+                (1280-75) - mRackHolderSprite.getHeight());
 
         mMaskButtonSprite = new Sprite(ResourceManager.get("maskbutton"));
 
@@ -87,17 +87,17 @@ public class GameHolder implements ApplicationListener {
         mSpriteBatch.enableBlending();
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
-        mCamera = new OrthographicCamera(800, 1280);
-        mCameraOrigin.set(400, 1280 / 2);
+        mCamera = new OrthographicCamera(800, (1280-75));
+        mCameraOrigin.set(400, (1280-75) / 2);
 
         mPlayer1Wins = new Sprite(ResourceManager.get("p1wins"));
         mPlayer2Wins = new Sprite(ResourceManager.get("p2wins"));
 
         mPlayer1Wins.setPosition((800 * 0.5f)
-                - (mPlayer1Wins.getWidth() * 0.5f), (1280 * 0.5f)
+                - (mPlayer1Wins.getWidth() * 0.5f), ((1280-75) * 0.5f)
                 - (mPlayer1Wins.getHeight() * 0.5f));
         mPlayer2Wins.setPosition((800 * 0.5f)
-                - (mPlayer2Wins.getWidth() * 0.5f), (1280 * 0.5f)
+                - (mPlayer2Wins.getWidth() * 0.5f), ((1280-75) * 0.5f)
                 - (mPlayer2Wins.getHeight() * 0.5f));
 
         mDebugShapeRenderer = new ShapeRenderer();
@@ -479,10 +479,10 @@ public class GameHolder implements ApplicationListener {
         	mLogic.newGame();
         	
             mRackSprite.setPosition(800 / 2 - mRackSprite.getWidth() / 2,
-                    1280 - mRackSprite.getHeight());
+                    ((1280-75)-75) - mRackSprite.getHeight());
             mRackHolderSprite.setPosition(
                     800 / 2 - mRackHolderSprite.getWidth() / 2,
-                    1280 - mRackHolderSprite.getHeight());
+                    ((1280-75)-75) - mRackHolderSprite.getHeight());
         }
     }
 
@@ -500,7 +500,7 @@ public class GameHolder implements ApplicationListener {
 
     private boolean inputInGrid(int x, int y) {
         // rack and tray both occupy 64 pixels of space at the top of the screen
-        return y > 64 && y < 1280 - 64;
+        return y > 64 && y < (1280-75) - 64;
     }
 
     private boolean inputInMaskButton(int x, int y) {

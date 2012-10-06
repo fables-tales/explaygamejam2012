@@ -9,7 +9,7 @@ public class Main {
         cfg.title = "gdx";
         cfg.useGL20 = true;
         cfg.width = 800 / 2;
-        cfg.height = 1280 / 2;
+        cfg.height = (1280-75) / 2;
 
         new LwjglApplication(new GameHolder(), cfg);
     }
