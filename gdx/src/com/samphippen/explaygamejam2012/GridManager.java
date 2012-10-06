@@ -197,4 +197,10 @@ public class GridManager {
         mToggleDelay = 10;
     }
 
+    public boolean touchInBlock(int i, int j, int playerID) {
+        List<Sprite> s = getCurrentGridSprites(1-playerID);
+        int gridIndex = i + j*SQUARES_PER_ROW;
+        return s.get(gridIndex).getColor().a > 0.993;
+    }
+
 }

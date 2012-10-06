@@ -61,7 +61,7 @@ public class GameHolder implements ApplicationListener {
 
         mBackgroundSprite = new Sprite(ResourceManager.get("background"));
         mBackgroundSprite.setPosition(0, -70);
-        
+
         t = ResourceManager.get("splash");
         mSplashSprite = new Sprite(t);
 
@@ -165,11 +165,11 @@ public class GameHolder implements ApplicationListener {
         if (Gdx.input.isTouched()) {
             mStartupScreen = false;
         }
-        
+
         mSpriteBatch.begin();
         mSplashSprite.draw(mSpriteBatch);
         mSpriteBatch.end();
-        
+
     }
 
     @Override
@@ -348,13 +348,13 @@ public class GameHolder implements ApplicationListener {
 
             mHeldCog.setMouseTracking(false);
             mHeldCog.fixToGrid();
-            
-            if (mTray.touchInside(Gdx.input.getX() * 2, (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2) ) {
-            	mLogic.playerPlacedCog(false);
+
+            if (mTray.touchInside(Gdx.input.getX() * 2,
+                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
+                mLogic.playerPlacedCog(false);
                 mGraph.removeCog(mHeldCog);
                 mTray.addCog(mHeldCog);
-            }
-            else if (mGraph.dropCog(mHeldCog) == false) {
+            } else if (mGraph.dropCog(mHeldCog) == false) {
                 System.out.println("Dropping failed");
 
                 if (mLogic.mCogWasFromBoard == false) {
@@ -373,15 +373,14 @@ public class GameHolder implements ApplicationListener {
             mLastCog = mHeldCog;
             mHeldCog = null;
             mHoldingCog = false;
+        } else {
+            mHeldCog.fixToGrid();
+
+            boolean canPlace = mGraph.checkDropCog(mHeldCog);
+
+            mHeldCog.setCanPlace(canPlace);
         }
-        else {      
-        	mHeldCog.fixToGrid();
-        	
-        	boolean canPlace = mGraph.checkDropCog(mHeldCog);
-        	
-        	mHeldCog.setCanPlace(canPlace);
-        }
-        	
+
     }
 
     private void doSelectingEvents() {
@@ -407,8 +406,11 @@ public class GameHolder implements ApplicationListener {
             } else {
                 mHeldCog = mGraph.touchOnCog(Gdx.input.getX() * 2,
                         (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2);
-
-                if (mHeldCog != null) {
+                int x = Gdx.input.getX() * 2;
+                int y = (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2;
+                if (mHeldCog != null
+                        && !mGridManager.touchInBlock(getGridX(x), getGridY(y),
+                                mLogic.mPlayerID)) {
                     System.out.println("Picking up cog");
 
                     mHoldingCog = true;
