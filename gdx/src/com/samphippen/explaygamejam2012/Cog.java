@@ -18,7 +18,7 @@ public class Cog {
 
     private Sprite mSprite;
     // THIS MUST BE DEGREEEEES
-    private float mAngle;
+    public float mAngle;
     private boolean mMouseTracking = false;
     private boolean mIsDrive = false; 
 	private boolean mIsScrew = false;  

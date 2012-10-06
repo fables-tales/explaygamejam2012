@@ -135,6 +135,7 @@ public class GameHolder implements ApplicationListener {
 
     public void update() {
         mMaskButtonCountDown -= 1;
+        
         switch (mLogic.mState) {
         case ClearGameState:
             mTray.addCogs(mGraph.mCogs);
@@ -262,8 +263,17 @@ public class GameHolder implements ApplicationListener {
     }
 
     private void doAnimation() {
+    	float oldScrewAngle = mGraph.mScrew.mAngle; 
+    	
+    	mGraph.evaluate();
+    	
+    	float newScrewAngle = mGraph.mScrew.mAngle;
+    	
+    	mLogic.mTotalDriveToScrew += oldScrewAngle - newScrewAngle; 
+    	
         mLogic.animationTick();
-        mGraph.evaluate();
+        
+        
     }
 
     private void doMovingEvents() {
@@ -304,9 +314,10 @@ public class GameHolder implements ApplicationListener {
         if (!mHoldingCog && Gdx.input.isTouched()) {
             if (inputInMaskButton(Gdx.input.getX() * 2,
                     (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
-                toggleMaskMode();
-            } else if (mTray.touchInside(Gdx.input.getX() * 2,
-                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)
+            		toggleMaskMode();
+            } else 
+            if (mTray.touchInside(Gdx.input.getX() * 2,
+                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2) 
                     && inputInMaskButton(Gdx.input.getX() * 2,
                             (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
 
@@ -333,7 +344,8 @@ public class GameHolder implements ApplicationListener {
                     System.out.println("");
 
                     mLogic.playerSelectedCog(mHeldCog, true);
-                } else if (inputInGrid(Gdx.input.getX() * 2,
+                } 
+                else if (inputInGrid(Gdx.input.getX() * 2,
                         (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)
                         && !inputInMaskButton(
                                 Gdx.input.getX() * 2,
@@ -341,7 +353,7 @@ public class GameHolder implements ApplicationListener {
                         && mMaskButtonPressed) {
 
                     toggleGridSquare(gridX, gridY);
-                }
+                } 
             }
         }
     }
