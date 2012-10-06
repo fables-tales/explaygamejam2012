@@ -36,10 +36,12 @@ public class GameHolder implements ApplicationListener {
     private Sprite mPlayer1Wins;
     private Sprite mPlayer2Wins;
     private Sprite mBackgroundSprite;
+    private Sprite mSplashSprite;
 
     private boolean mRunTurns = true;
     private SpriteBatch mSpriteBatch;
     private Tray mTray;
+    private boolean mStartupScreen = true;
 
     @Override
     public void create() {
@@ -59,8 +61,9 @@ public class GameHolder implements ApplicationListener {
 
         mBackgroundSprite = new Sprite(ResourceManager.get("background"));
         mBackgroundSprite.setPosition(0, -70);
-        
-        
+
+        t = ResourceManager.get("splash");
+        mSplashSprite = new Sprite(t);
 
         mGridManager = new GridManager();
         mSpriteBatch = new SpriteBatch();
@@ -112,13 +115,13 @@ public class GameHolder implements ApplicationListener {
         mGraph.mScrew.draw(mSpriteBatch);
         
         mTray.preDraw(mSpriteBatch);
-        
+
         for (int i = 0; i < mGraph.mCogs.size(); i++) {
             Cog c = mGraph.mCogs.get(i);
             
             if (c.getIsFixed() == false) c.draw(mSpriteBatch);
         }
-        
+
         mRackSprite.draw(mSpriteBatch);
         mTray.draw(mSpriteBatch);
         mGridManager.drawCurrentPlayer(mSpriteBatch, mLogic.mPlayerID);
@@ -156,8 +159,23 @@ public class GameHolder implements ApplicationListener {
 
     @Override
     public void render() {
-        update();
-        draw();
+        if (!mStartupScreen) {
+            update();
+            draw();
+        } else {
+            drawStartupScreen();
+        }
+    }
+
+    private void drawStartupScreen() {
+        if (Gdx.input.isTouched()) {
+            mStartupScreen = false;
+        }
+
+        mSpriteBatch.begin();
+        mSplashSprite.draw(mSpriteBatch);
+        mSpriteBatch.end();
+
     }
 
     @Override
@@ -338,13 +356,13 @@ public class GameHolder implements ApplicationListener {
 
             mHeldCog.setMouseTracking(false);
             mHeldCog.fixToGrid();
-            
-            if (mTray.touchInside(Gdx.input.getX() * 2, (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2) ) {
-            	mLogic.playerPlacedCog(false);
+
+            if (mTray.touchInside(Gdx.input.getX() * 2,
+                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
+                mLogic.playerPlacedCog(false);
                 mGraph.removeCog(mHeldCog);
                 mTray.addCog(mHeldCog);
-            }
-            else if (mGraph.dropCog(mHeldCog) == false) {
+            } else if (mGraph.dropCog(mHeldCog) == false) {
                 System.out.println("Dropping failed");
 
                 if (mLogic.mCogWasFromBoard == false) {
@@ -363,15 +381,14 @@ public class GameHolder implements ApplicationListener {
             mLastCog = mHeldCog;
             mHeldCog = null;
             mHoldingCog = false;
+        } else {
+            mHeldCog.fixToGrid();
+
+            boolean canPlace = mGraph.checkDropCog(mHeldCog);
+
+            mHeldCog.setCanPlace(canPlace);
         }
-        else {      
-        	mHeldCog.fixToGrid();
-        	
-        	boolean canPlace = mGraph.checkDropCog(mHeldCog);
-        	
-        	mHeldCog.setCanPlace(canPlace);
-        }
-        	
+
     }
 
     private void doSelectingEvents() {
@@ -413,8 +430,11 @@ public class GameHolder implements ApplicationListener {
             } else {
                 mHeldCog = mGraph.touchOnCog(Gdx.input.getX() * 2,
                         (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2);
-
-                if (mHeldCog != null) {
+                int x = Gdx.input.getX() * 2;
+                int y = (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2;
+                if (mHeldCog != null
+                        && !mGridManager.touchInBlock(getGridX(x), getGridY(y),
+                                mLogic.mPlayerID)) {
                     System.out.println("Picking up cog");
 
                     mHoldingCog = true;
@@ -451,12 +471,11 @@ public class GameHolder implements ApplicationListener {
     }
 
     private int getGridX(int x) {
-        return x / (800 / GridManager.SQUARES_PER_ROW);
+        return mGridManager.getGridX(x);
     }
 
     private int getGridY(int y) {
-        // TODO Auto-generated method stub
-        return y / (1280 / GridManager.NUMBER_OF_ROWS);
+        return mGridManager.getGridY(y);
     }
 
     private boolean inputInGrid(int x, int y) {
