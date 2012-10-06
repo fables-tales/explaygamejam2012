@@ -159,7 +159,6 @@ public class GridManager {
         for (int i = 0; i < getCurrentGridSprites(playerID).size(); i++) {
             Sprite gridSprite = getCurrentGridSprites(playerID).get(i);
             Color sc = gridSprite.getColor();
-            System.out.println(sc.a);
             if (sc.a >= 0.995) {
                 System.out.println("alpha");
                 sc.a = 0.441f;
