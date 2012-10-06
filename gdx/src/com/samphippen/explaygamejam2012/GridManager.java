@@ -48,8 +48,8 @@ public class GridManager {
     }
 
     public void receiveTouch(int gridX, int gridY, int player) {
-        if (mToggleDelay <= 0) {
-            mToggleDelay = 10;
+        if (mToggleDelay <= 0 && gridX < SQUARES_PER_ROW && gridY < NUMBER_OF_ROWS) {
+            mToggleDelay = 30;
             if (mTouchedSquares == 0) {
                 mSquareTouchX = gridX;
                 mSquareTouchY = gridY;

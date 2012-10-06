@@ -54,9 +54,9 @@ public class GameHolder implements ApplicationListener {
         mTray = new Tray();
         mGraph = new CogGraph();
 
-        Texture t = new Texture(Gdx.files.internal("tray.png"));
+        Texture t = new Texture(Gdx.files.internal("rack.png"));
         mRackSprite = new Sprite(t);
-        mRackSprite.setPosition(0, 1280 - mRackSprite.getHeight());
+        mRackSprite.setPosition(800/2-mRackSprite.getWidth()/2, 1280 - mRackSprite.getHeight());
 
         mMaskButtonSprite = new Sprite(ResourceManager.get("maskbutton"));
         mMaskButtonSpritePressed = new Sprite(ResourceManager.get("maskbuttonpressed"));
@@ -346,12 +346,14 @@ public class GameHolder implements ApplicationListener {
     private void doAnimation() {
         mMaskButtonPressed = false;
         float oldScrewAngle = mGraph.mScrew.mAngle;
+        
 
         mGraph.evaluate();
 
         float newScrewAngle = mGraph.mScrew.mAngle;
 
         mLogic.mTotalDriveToScrew += oldScrewAngle - newScrewAngle;
+        mRackSprite.translate((oldScrewAngle - newScrewAngle)*0.2f, 0);
 
         mLogic.animationTick();
     }

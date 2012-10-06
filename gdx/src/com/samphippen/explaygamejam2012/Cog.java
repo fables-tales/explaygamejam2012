@@ -13,7 +13,7 @@ public class Cog {
 	static int mCogID = 0;
 	
     public static Cog getCog(int i) {
-        Cog c = new Cog(new Sprite(ResourceManager.get("cog" + i)), i, 37, mCogID++);
+        Cog c = new Cog(new Sprite(ResourceManager.get("cog" + i)), i, 0, mCogID++);
         return c;
     }
 

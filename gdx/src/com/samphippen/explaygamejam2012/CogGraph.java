@@ -36,11 +36,11 @@ public class CogGraph {
 
 		mGraph.put(mDrive, new ArrayList<Cog>());
 		
-		mScrew = Cog.getCog(5);
+		mScrew = Cog.getCog(1);
 		mScrew.promoteToScrew();     
 		
 		mScrew.setCenterX(800 * 0.5f);
-		mScrew.setCenterY(1280 - 80);        
+		mScrew.setCenterY(1280 - 223);        
 		mScrew.fixToGrid(); 
 
 		mCogs.add(mScrew);
