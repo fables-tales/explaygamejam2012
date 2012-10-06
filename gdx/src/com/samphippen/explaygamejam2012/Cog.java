@@ -9,8 +9,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Cog {
 
+	static int mCogID = 0; 
+	
     public static Cog getCog() {
-        Cog c = new Cog(new Sprite(ResourceManager.get("cogA")), 37);
+        Cog c = new Cog(new Sprite(ResourceManager.get("cogA")), 37, mCogID++);
         return c;
     }
 
@@ -23,14 +25,16 @@ public class Cog {
 	public boolean mVisited;
 	private int mNextAngle;
 	public boolean mBindingsReversed;
+	public int CogID = 0;
 	
 	// we need this for refactoring the graph (probably)
 	public List<Cog> mConnections = new ArrayList<Cog>();
 
 	
-    public Cog(Sprite s, float a) {
+    public Cog(Sprite s, float a, int id) {
         mSprite = s;
         mAngle = a;
+        CogID = id; 
     }
 
 	public boolean getIsFixed() {

@@ -31,7 +31,7 @@ public class GameHolder implements ApplicationListener {
     private int mCogTime;
     private CogGraph mGraph;
 	private boolean mDebugging = true;
-    
+    private boolean mRunTurns = true; 
 
     @Override
     public void create() {
@@ -52,6 +52,7 @@ public class GameHolder implements ApplicationListener {
         mLastCog = mGraph.mDrive;
         
         //createTestGraph(); 
+        //createTestGraph2();
     }
 
     private void createTestGraph() {
@@ -86,8 +87,61 @@ public class GameHolder implements ApplicationListener {
         }
         
         //mGraph.removeCog(mHeldCog); 
-	}
+	}    
+    
+    private void createTestGraph2() {
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+        
+    	Cog cog1 = mTray.getCog();
+    	cog1.setCenterX(w * 0.5f);     	
+    	cog1.setCenterY(h - 64);
+    	
+    	Cog cog2 = mTray.getCog();
+    	cog2.setCenterX(w * 0.5f);     	
+    	cog2.setCenterY(h - 128);    	
 
+    	Cog cog3 = mTray.getCog();
+    	cog3.setCenterX(w * 0.5f);     	
+    	cog3.setCenterY(h - 192);    	
+
+    	Cog cog4 = mTray.getCog();
+    	cog4.setCenterX(w * 0.5f);     	
+    	cog4.setCenterY(h - 256);    	
+    	
+    	mGraph.addCog(cog1);
+    	mGraph.addCog(cog2);
+    	mGraph.addCog(cog3);
+    	mGraph.addCog(cog4);
+    	
+    	mGraph.add(cog1, cog2);
+    	mGraph.add(cog2, cog3);
+    	mGraph.add(cog3, cog4);    	
+    	
+    	mGraph.evaluate(); 
+    	
+    	mHeldCog = mTray.getCog();
+    	mGraph.addCog(mHeldCog);
+    	
+    	mHeldCog.setCenterX(w * 0.5f);  
+    	mHeldCog.setCenterY(h - 320);  
+    	
+        mHeldCog.fixToGrid();
+        if (mGraph.dropCog(mHeldCog) == false) {
+        	mGraph.removeCog(mHeldCog); 
+        	mTray.addCog(mHeldCog); 
+        }
+        
+        mGraph.removeCog(mHeldCog);
+        
+        if (mGraph.dropCog(mHeldCog) == false) {
+        	mGraph.removeCog(mHeldCog); 
+        	mTray.addCog(mHeldCog); 
+        }        
+        
+        //mGraph.removeCog(cog2);
+	}
+        
 	@Override
     public void dispose() {
     	ResourceManager.dispose(); 
@@ -149,6 +203,8 @@ public class GameHolder implements ApplicationListener {
             		System.out.println("Picking up cog");
             		mHoldingCog = true;
             		mHeldCog.setMouseTracking(true);
+            		System.out.println("");
+            		System.out.println("");
             	}            	
             }            	
         }
@@ -162,10 +218,13 @@ public class GameHolder implements ApplicationListener {
             
             if (mGraph.dropCog(mHeldCog) == false) {
             	System.out.println("Dropping failed");
-            	mGraph.mCogs.remove(mHeldCog); 
+            	mGraph.removeCog(mHeldCog); 
             	mTray.addCog(mHeldCog); 
             }
             
+    		System.out.println("");
+    		System.out.println("");
+    		
             mLastCog = mHeldCog;  
             mHeldCog = null;
             mHoldingCog = false;

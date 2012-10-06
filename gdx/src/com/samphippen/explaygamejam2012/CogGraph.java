@@ -21,7 +21,7 @@ public class CogGraph {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
         
-		mDrive = new Cog(new Sprite(ResourceManager.get("cogA")), 37);
+		mDrive = Cog.getCog();
 		mDrive.promoteToDrive();     
 		
 		mDrive.setCenterX(w * 0.5f);
@@ -32,7 +32,7 @@ public class CogGraph {
 
 		mGraph.put(mDrive, new ArrayList<Cog>());
 		
-		mScrew = new Cog(new Sprite(ResourceManager.get("cogA")), 37);
+		mScrew = Cog.getCog();
 		mScrew.promoteToScrew();     
 		
 		mScrew.setCenterX(w * 0.5f);
@@ -52,9 +52,13 @@ public class CogGraph {
 			
 			if (other.isTouchOn(x, y) == true) {
 				
+				System.out.println("Touch On " + other.CogID);
+				
 				removeCog(other);
 				
 				mCogs.add(other);
+				
+				refactorForward(); 
 				
 				return other; 
 			}
@@ -65,6 +69,8 @@ public class CogGraph {
 
 	public boolean dropCog(Cog cog) {
 
+		System.out.println("Drop Cog " + cog.CogID);
+		
 		// this is possibly not the best way to do this?!
 		mPossibleConnetions.clear();
 
@@ -94,7 +100,7 @@ public class CogGraph {
 		}
 
 		// *********** refactor cog graph *********** 
-		
+
 		boolean isAttachedToDrive = false;
 
 		// scan for cogs that have been visited
@@ -117,7 +123,7 @@ public class CogGraph {
 			for (int i = 0; i < mPossibleConnetions.size(); i++) {
 				Cog other = mPossibleConnetions.get(i);
 
-				if (other.mVisited == false) {
+				if (other.mVisited == false && other.mBindingsReversed == false) {
 					reverseBindings(other);
 
 					add(cog, other);
@@ -128,16 +134,20 @@ public class CogGraph {
 			// we can safely link the cogs in anyway we like? 
 			for (int i = 0; i < mPossibleConnetions.size(); i++) {
 				Cog other = mPossibleConnetions.get(i);
-
+				
 				add(other, cog);
 			}
 		}
+		
+		refactorForward(); 
 
 		return true;
 	}
 
 	private void reverseBindings(Cog cog) {
 
+		System.out.println("Reverse Bindings " + cog.CogID);
+		
 		cog.mBindingsReversed = true;
 
 		// Check any forward bindings
@@ -152,9 +162,10 @@ public class CogGraph {
 				if (other.mBindingsReversed == false) {
 					
 					remove(cog, other);
-					add(other, cog);
-				
+					
 					reverseBindings(other);
+					
+					add(other, cog);			
 				}
 			}
 		}
@@ -167,19 +178,73 @@ public class CogGraph {
 			if (other.mBindingsReversed == false) {
 
 				remove(other, cog);
-				add(cog, other);
-
+				
 				reverseBindings(other);
+				
+				add(cog, other);				
 			}
 		}
 	}
 
+	public boolean refactorForward() {
+
+		for (int i = 0; i < mCogs.size(); i++) {
+			mCogs.get(i).mBindingsReversed = false;
+		}
+
+		if (refactorForward_Sub(mDrive) == true) {
+			
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private boolean refactorForward_Sub(Cog node) {
+
+		node.mBindingsReversed = true;
+
+		if (mGraph.containsKey(node)) {
+			List<Cog> list = mGraph.get(node);
+
+			for (int i = 0; i < list.size(); i++) {
+				Cog child = list.get(i);
+
+				if (child.mBindingsReversed == false) {
+					refactorForward_Sub(child);
+				}
+			}
+		}
+		
+		// check any backward bindings
+		for (int i = node.mConnections.size() - 1; i >= 0; --i) {
+
+			Cog other = node.mConnections.get(i);
+
+			if (other.mBindingsReversed == false) {
+
+				remove(other, node);
+				
+				reverseBindings(other);
+				
+				add(node, other);				
+			}
+		}
+
+		return true;
+	}
+
 	public void addCog(Cog cog) {
+		
+		System.out.println("Add Cog " + cog.CogID);
+		
 		mCogs.add(cog);
 	}
 
 	public void removeCog(Cog cog) {
 
+		System.out.println("Remove Cog " + cog.CogID);
+		
 		// Check any forward bindings
 		if (mGraph.containsKey(cog) == true) {
 
@@ -198,17 +263,14 @@ public class CogGraph {
 
 			Cog other = cog.mConnections.get(i);
 
-			if (other.mBindingsReversed == false) {
-
-				remove(other, cog);				
-			}
+			remove(other, cog);				
 		}
 
 		mCogs.remove(cog);
 	}
 
-	public boolean remove(Cog parent, Cog cog) {
-
+	public boolean remove(Cog parent, Cog cog) {		
+		
 		if (mGraph.containsKey(parent) == false) {
 			// return false;
 			return false;
@@ -220,6 +282,8 @@ public class CogGraph {
 			return false;
 		}
 
+		System.out.println("Remove " + cog.CogID + " from " + parent.CogID);
+		
 		// remove the back link 
 		if (cog.mConnections.contains(parent) == true) {
 			cog.mConnections.remove(parent);
@@ -233,7 +297,9 @@ public class CogGraph {
 	public boolean add(Cog parent, Cog cog) {
 
 		if (mGraph.containsKey(parent) == false) {
-			// return false;
+			
+			System.out.println("Add Node " + parent.CogID);
+			
 			mGraph.put(parent, new ArrayList<Cog>());
 		}
 
@@ -243,6 +309,8 @@ public class CogGraph {
 			return false;
 		}
 
+		System.out.println("Add " + cog.CogID + " to " + parent.CogID);
+		
 		// we need a back link so we can refactor the graph 
 		if (cog.mConnections.contains(parent) == false) {
 			cog.mConnections.add(parent);
