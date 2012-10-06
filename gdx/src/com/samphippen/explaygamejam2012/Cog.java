@@ -1,15 +1,16 @@
 package com.samphippen.explaygamejam2012;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Cog {
 
     public static Cog getCog() {
-        Texture t = new Texture(Gdx.files.internal("circle.png"));
-        Cog c = new Cog(new Sprite(t), 37);
+        Cog c = new Cog(new Sprite(ResourceManager.get("cogA")), 37);
         return c;
     }
 
@@ -17,29 +18,78 @@ public class Cog {
     // THIS MUST BE DEGREEEEES
     private float mAngle;
     private boolean mMouseTracking = false;
-    private boolean mIsDrive = false;
+    private boolean mIsDrive = false; 
+	private boolean mIsScrew = false;  
 	public boolean mVisited;
+	private int mNextAngle;
+	public boolean mBindingsReversed;
+	
+	// we need this for refactoring the graph (probably)
+	public List<Cog> mConnections = new ArrayList<Cog>();
 
+	
     public Cog(Sprite s, float a) {
         mSprite = s;
         mAngle = a;
     }
 
+	public boolean getIsFixed() {
+		return mIsDrive || mIsScrew; 
+	}
+	
+    public float getRadius() { 
+    	return (mSprite.getWidth() * 0.5f) - 3f;   	
+    }
+    
+    public float getRadiusIncludingTeeth() { 
+    	return getRadius() + 8f;   	
+    }    
+    
+    public float getCenterX() {
+    	return  mSprite.getX() + (mSprite.getWidth() * 0.5f);   	
+    }
+
+    public void setCenterX(float value) {
+    	mSprite.setX(value - (mSprite.getWidth() * 0.5f));   	
+    }
+
+    public float getCenterY() {
+    	return  mSprite.getY() + (mSprite.getHeight() * 0.5f);   	
+    }
+    
+    public void setCenterY(float value) {
+    	mSprite.setY(value - (mSprite.getHeight() * 0.5f));   	
+    }
+    
     public void draw(SpriteBatch sb) {
         mSprite.setRotation(mAngle);
         mSprite.draw(sb);
+    }
+    
+    public void fixToGrid() { 
+    	int x = (int)getCenterX(); 
+    	int y = (int)getCenterY();
+    	
+    	x -= x % 16; 
+    	y -= y % 16;
+    	
+    	setCenterX((float)x);
+    	setCenterY((float)y); 
     }
 
     public void update() {
         if (mMouseTracking) {
             float x = Gdx.input.getX();
             float y = Gdx.graphics.getHeight() - Gdx.input.getY();
-            mSprite.setPosition(x, y);
+            
+            setCenterX(x); 
+            setCenterY(y); 
+            // mSprite.setPosition(x, y);
         }
         
-        if (mIsDrive) {
-            mAngle += 1;
-        }
+        //if (mIsDrive) {
+        //    mAngle += 1;
+        //}
     }
 
     public void setMouseTracking(boolean b) {
@@ -49,4 +99,43 @@ public class Cog {
     public void promoteToDrive() {
         mIsDrive = true;
     }
+    
+	public void promoteToScrew() {
+		mIsScrew = true;	
+	}
+
+	public void rotate(boolean dir) {
+		mNextAngle += dir ? -1 : 1; 	
+	}
+	
+	public void applyRotation() { 
+		mAngle = mNextAngle; 
+	}
+
+	public boolean isTouchOn(int px, int py) {
+		float x = getCenterX() - (float)px;
+		float y = getCenterY() - (float)py;
+		
+		double dist = Math.sqrt(x * x + y * y);
+		
+		return dist <= getRadius(); 	
+	}
+	
+	public boolean isPossibleOverlapping(Cog other) {
+		float x = getCenterX() - other.getCenterX();
+		float y = getCenterY() - other.getCenterY();
+		
+		double dist = Math.sqrt(x * x + y * y);
+		
+		return dist <= getRadiusIncludingTeeth() + other.getRadiusIncludingTeeth(); 	
+	}
+	
+	public boolean isOverlapping(Cog other) {
+		float x = getCenterX() - other.getCenterX();
+		float y = getCenterY() - other.getCenterY();
+		
+		double dist = Math.sqrt(x * x + y * y);
+		
+		return dist <= getRadius() + other.getRadius(); 	
+	}
 }

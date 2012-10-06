@@ -17,13 +17,16 @@ public class Tray {
 
     public Tray() {
 
-        Texture t = new Texture(Gdx.files.internal("tray.png"));
-        mSprite = new Sprite(t);
+        mSprite = new Sprite(ResourceManager.get("tray"));
         for (int i = 0; i < MAX_COGS_EVER; i++) {
             mCogs.add(Cog.getCog());
         }
     }
 
+	public void addCog(Cog cog) {
+		mCogs.add(cog);
+	}
+	
     public Cog getCog() {
         if (mCogs.size() > 0) {
             return mCogs.remove(0);
