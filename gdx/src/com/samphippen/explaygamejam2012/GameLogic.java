@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class GameLogic {	
 	public static float MAX_DRIVE_TO_SCREW = 720f; 
+	public static float COG_MOVE_FRAMES = 120f;
 	
 	public TurnStage mState = TurnStage.GameStart; 	
 	public Cog mSeletedCog;
@@ -107,6 +108,11 @@ public class GameLogic {
 			// the cog started and ended in the tray
 			mState = TurnStage.WaitingForPlayer; 			
 		}
+		else if (mCogWasFromBoard && !ontoBoard)
+		{
+			// the cog started on the board and ended in the tray
+			mState = TurnStage.WaitingForPlayer; 			
+		}
 		else 
 		{
 			// the cog started in the tray and ended on the board 
@@ -145,7 +151,7 @@ public class GameLogic {
 			mPlayerID = 1; 
 			mAnimationFrame = 0; 
 		}
-		else if (mAnimationFrame > 360) { 
+		else if (mAnimationFrame > COG_MOVE_FRAMES) { 
 			mState = TurnStage.RollDown;
 		}
 	}

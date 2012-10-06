@@ -22,13 +22,15 @@ public class Cog {
     private boolean mMouseTracking = false;
     private boolean mIsDrive = false; 
 	private boolean mIsScrew = false;  
+	private boolean mCanPlace = false;
+	
 	public boolean mVisited;
 	private float mNextAngle;
 	public boolean mBindingsReversed;
 	public int CogID = 0;
 	
 	// we need this for refactoring the graph (probably)
-	public List<Cog> mConnections = new ArrayList<Cog>();
+	public List<Cog> mConnections = new ArrayList<Cog>();	
 
 	
     public Cog(Sprite s, float a, int id) {
@@ -98,6 +100,10 @@ public class Cog {
 
     public void setMouseTracking(boolean b) {
         mMouseTracking = b;
+        
+        if (b == false) mCanPlace  = false; 
+        
+        mSprite.setColor(1, 1, 1, b && mCanPlace == false ? 0.5f : 1f); 
     }
     
     public void promoteToDrive() {
@@ -109,7 +115,9 @@ public class Cog {
 	}
 
 	public void rotate(boolean dir) {
-		mNextAngle = mAngle + (dir ? -1f : 1f); 	
+		float angleSpeed = 360f / GameLogic.COG_MOVE_FRAMES; 
+		
+		mNextAngle = mAngle + (dir ? -angleSpeed : angleSpeed); 	
 	}
 	
 	public void applyRotation() { 
@@ -141,5 +149,12 @@ public class Cog {
 		double dist = Math.sqrt(x * x + y * y);
 		
 		return dist <= getRadius() + other.getRadius(); 	
+	}
+
+	public void setCanPlace(boolean canPlace) {
+		
+		mCanPlace = canPlace; 
+		
+		mSprite.setColor(1, 1, 1, mCanPlace == false ? 0.5f : 1f); 
 	}
 }

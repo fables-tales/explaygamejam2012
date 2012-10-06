@@ -315,8 +315,13 @@ public class GameHolder implements ApplicationListener {
 
             mHeldCog.setMouseTracking(false);
             mHeldCog.fixToGrid();
-
-            if (mGraph.dropCog(mHeldCog) == false) {
+            
+            if (mTray.touchInside(Gdx.input.getX() * 2, (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2) ) {
+            	mLogic.playerPlacedCog(false);
+                mGraph.removeCog(mHeldCog);
+                mTray.addCog(mHeldCog);
+            }
+            else if (mGraph.dropCog(mHeldCog) == false) {
                 System.out.println("Dropping failed");
 
                 if (mLogic.mCogWasFromBoard == false) {
@@ -336,6 +341,14 @@ public class GameHolder implements ApplicationListener {
             mHeldCog = null;
             mHoldingCog = false;
         }
+        else {      
+        	mHeldCog.fixToGrid();
+        	
+        	boolean canPlace = mGraph.checkDropCog(mHeldCog);
+        	
+        	mHeldCog.setCanPlace(canPlace);
+        }
+        	
     }
 
     private void doSelectingEvents() {

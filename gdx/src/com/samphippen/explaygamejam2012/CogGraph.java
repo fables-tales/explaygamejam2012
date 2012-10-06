@@ -68,6 +68,39 @@ public class CogGraph {
 		
 		return null;
 	}
+	
+	public boolean checkDropCog(Cog cog) { 
+
+		// this is possibly not the best way to do this?!
+		mPossibleConnetions.clear();
+
+		// ***********  find all connecting cogs *********** 
+
+		for (int i = 0; i < mCogs.size(); i++) {
+			Cog other = mCogs.get(i);
+
+			if (other == cog)
+				continue;
+
+			if (cog.isPossibleOverlapping(other) == true) {
+				mPossibleConnetions.add(other);
+			}
+		}
+
+		// *********** find a suitable spot *********** 
+		
+		for (int i = 0; i < mPossibleConnetions.size(); i++) {
+			Cog other = mPossibleConnetions.get(i);
+
+			if (cog.isOverlapping(other) == true) {
+				
+				// THIS NEEDS BETTER(ING) 
+				return false;
+			}
+		}
+		
+		return mPossibleConnetions.size() > 0; 
+	}
 
 	public boolean dropCog(Cog cog) {
 
