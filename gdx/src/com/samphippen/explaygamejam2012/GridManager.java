@@ -22,7 +22,7 @@ public class GridManager {
     private int mTouchedSquares = 0;
     private int mSquareTouchX;
     private int mSquareTouchY;
-    private int mHeight = 1280 - (300+300);
+    private int mHeight = (1280-75) - (300+300);
     private int mWidth = 720;
     private int mYOffset = 350;
     private int mXOffset = 40;

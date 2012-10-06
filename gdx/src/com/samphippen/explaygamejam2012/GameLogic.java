@@ -32,7 +32,7 @@ public class GameLogic {
         Texture t = ResourceManager.get("rolldown");
         System.out.println(t);
         mRollDownSprite = new Sprite(t);
-        mRollDownSprite.setPosition(0, 1280);
+        mRollDownSprite.setPosition(0, (1280-75));
     }
 	
 	private void resetMove() { 
