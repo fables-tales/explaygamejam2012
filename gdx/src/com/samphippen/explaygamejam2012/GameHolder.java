@@ -32,7 +32,8 @@ public class GameHolder implements ApplicationListener {
     private CogGraph mGraph;
 	private boolean mDebugging = true;
     private boolean mRunTurns = true; 
-
+    private GameLogic mLogic = new GameLogic(); 
+    
     @Override
     public void create() {
     	ResourceManager.loadResources();   
@@ -50,9 +51,11 @@ public class GameHolder implements ApplicationListener {
         mDebugShapeRenderer = new ShapeRenderer(); 
         
         mLastCog = mGraph.mDrive;
-        
+                
         //createTestGraph(); 
         //createTestGraph2();
+        
+        mLogic.newGame(); 
     }
 
     private void createTestGraph() {
@@ -184,12 +187,35 @@ public class GameHolder implements ApplicationListener {
 
     public void update() {
     	
+    	switch (mLogic.mState)
+    	{
+    		case ClearGameState:
+    			break; 
+    		case GameStart:
+    			break; 
+    		case WaitingForPlayer:
+    			break; 
+    		case MovingCog:
+    			break; 
+    		case Animating:
+    			break; 
+    		case NextPlayer:
+    			break; 
+    		case GameOver:
+    			break;     			
+    		default: 
+    			break; 
+    		
+    	}
+    	
     	mGraph.evaluate(); 
     	
         mCogTime += 1;
         if (!mHoldingCog && Gdx.input.isTouched()) {
             if (mTray.touchInside(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY())) {
+            	
             	System.out.println("Selecting cog");
+            	
             	mHoldingCog = true;
                 mHeldCog = mTray.getCog();
                 mGraph.addCog(mHeldCog);
@@ -201,8 +227,10 @@ public class GameHolder implements ApplicationListener {
             	
             	if (mHeldCog != null) {
             		System.out.println("Picking up cog");
+            		
             		mHoldingCog = true;
             		mHeldCog.setMouseTracking(true);
+            		
             		System.out.println("");
             		System.out.println("");
             	}            	
