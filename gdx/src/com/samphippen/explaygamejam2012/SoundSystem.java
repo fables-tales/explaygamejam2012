@@ -26,12 +26,13 @@ public class SoundSystem {
 
         sGrinding = Gdx.audio.newMusic(Gdx.files.internal("grindingCogs.mp3"));
         sGameOverMusic = Gdx.audio.newMusic(Gdx.files.internal("win.mp3"));
-
+        
         sTurnMusic.setLooping(true);
         sBetweenMusic.setLooping(true);
         sGrinding.setLooping(true);
         sGameOverMusic.setLooping(false);
-
+        sGrinding.setVolume(0.7f); 
+        
         addSound("canplace");
         addSound("hasplaced");
         addSound("CogsJammed");

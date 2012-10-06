@@ -41,6 +41,9 @@ public class GameHolder implements ApplicationListener {
     private Sprite mBackgroundSprite;
     private Sprite mSplashSprite;
 
+    private Animator mPlayer1Char;
+    private Animator mPlayer2Char; 
+    
     private boolean mRunTurns = true;
     private SpriteBatch mSpriteBatch;
     private Tray mTray;
@@ -94,6 +97,9 @@ public class GameHolder implements ApplicationListener {
         mPlayer1Wins = new Sprite(ResourceManager.get("p1wins"));
         mPlayer2Wins = new Sprite(ResourceManager.get("p2wins"));
 
+        mPlayer1Char = new Animator("hh", 27, 800 -240, 370);
+        mPlayer2Char = new Animator("moose", 27, 0,  370);
+        
         mPlayer1Wins.setPosition((800 * 0.5f)
                 - (mPlayer1Wins.getWidth() * 0.5f), (1280 * 0.5f)
                 - (mPlayer1Wins.getHeight() * 0.5f));
@@ -152,16 +158,25 @@ public class GameHolder implements ApplicationListener {
         } else {
             mMaskButtonSprite.draw(mSpriteBatch);
         }
-
+        
+        mPlayer1Char.incrementFrame(); 
+        mPlayer1Char.draw(mSpriteBatch);
+        
+        mPlayer2Char.incrementFrame(); 
+        mPlayer2Char.draw(mSpriteBatch);
+        
         mLogic.mRollDownSprite.draw(mSpriteBatch);
 
-        if (mLogic.mState == TurnStage.GameOver) {
-            if (mLogic.mPlayerID == 0) {
-                mPlayer1Wins.draw(mSpriteBatch);
-            } else {
-                mPlayer2Wins.draw(mSpriteBatch);
-            }
-        }
+        //if (mLogic.mState == TurnStage.GameOver) {
+        //    if (mLogic.mPlayerID == 0) {
+        //        mPlayer1Wins.draw(mSpriteBatch);
+        //    } else {
+        //        mPlayer2Wins.draw(mSpriteBatch);
+        //    }
+        //}
+        
+
+        
         mSpriteBatch.end();
 
         if (mDebugging == true) {
@@ -473,9 +488,15 @@ public class GameHolder implements ApplicationListener {
     private void doGameOverEvents() {
 
         mLogic.endGameTick();
-
+        
+        mPlayer1Char.mFalling = mLogic.mPlayerID == 0;
+        mPlayer2Char.mFalling = mLogic.mPlayerID == 1; 
+        
         if (mLogic.mAnimationFrame > 60 && Gdx.input.isTouched()) {
         	mGridManager.reset(); 
+        	
+        	mPlayer1Char.reset(); 
+        	mPlayer2Char.reset(); 
         	
         	mLogic.newGame();
         	
