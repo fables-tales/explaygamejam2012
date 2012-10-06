@@ -59,8 +59,12 @@ public class GameHolder implements ApplicationListener {
         mRackSprite.setPosition(800/2-mRackSprite.getWidth()/2, 1280 - mRackSprite.getHeight());
 
         mMaskButtonSprite = new Sprite(ResourceManager.get("maskbutton"));
+        mMaskButtonSprite.setX(40);
+        mMaskButtonSprite.setY(20);
         mMaskButtonSpritePressed = new Sprite(ResourceManager.get("maskbuttonpressed"));
-
+        mMaskButtonSpritePressed.setX(40);
+        mMaskButtonSpritePressed.setY(20);
+        
         mBackgroundSprite = new Sprite(ResourceManager.get("background"));
         mBackgroundSprite.setPosition(0, -70);
 
@@ -409,8 +413,7 @@ public class GameHolder implements ApplicationListener {
         int gridY = getGridY((Gdx.graphics.getHeight() - Gdx.input.getY()) * 2);
 
         if (!mHoldingCog && Gdx.input.isTouched()) {
-            if (inputInMaskButton(Gdx.input.getX() * 2,
-                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
+            if (inputInMaskButton(Gdx.input.getX() * 2, (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
                 toggleMaskMode();
             } else if (mTray.touchInside(Gdx.input.getX() * 2,
                     (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
@@ -445,6 +448,7 @@ public class GameHolder implements ApplicationListener {
                         (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2);
                 int x = Gdx.input.getX() * 2;
                 int y = (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2;
+                
                 if (mHeldCog != null
                         && !mGridManager.touchInBlock(getGridX(x), getGridY(y),
                                 mLogic.mPlayerID)) {
