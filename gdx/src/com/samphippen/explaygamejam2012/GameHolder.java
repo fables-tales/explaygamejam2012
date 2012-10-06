@@ -476,6 +476,7 @@ public class GameHolder implements ApplicationListener {
 
         if (mLogic.mAnimationFrame > 60 && Gdx.input.isTouched()) {
             mLogic.newGame();
+            mRackSprite.setPosition(800/2-mRackSprite.getWidth()/2, 1280 - mRackSprite.getHeight());
         }
     }
 
