@@ -26,7 +26,7 @@ public class CogGraph {
 		mDrive = Cog.getCog();
 		mDrive.promoteToDrive();     
 		
-		mDrive.setCenterX(w * 0.5f);
+		mDrive.setCenterX(800 * 0.5f);
 		mDrive.setCenterY(80);        
 		mDrive.fixToGrid(); 
 
@@ -37,8 +37,8 @@ public class CogGraph {
 		mScrew = Cog.getCog();
 		mScrew.promoteToScrew();     
 		
-		mScrew.setCenterX(w * 0.5f);
-		mScrew.setCenterY(h);        
+		mScrew.setCenterX(800 * 0.5f);
+		mScrew.setCenterY(1280 - 80);        
 		mScrew.fixToGrid(); 
 
 		mCogs.add(mScrew);
@@ -240,11 +240,15 @@ public class CogGraph {
 		
 		System.out.println("Add Cog " + cog.CogID);
 		
+		cog.mAngle = 0; 
+		
 		mCogs.add(cog);
 	}
 
 	public void removeCog(Cog cog) {
 
+		cog.mAngle = 0;
+		
 		System.out.println("Remove Cog " + cog.CogID);
 		
 		// Check any forward bindings

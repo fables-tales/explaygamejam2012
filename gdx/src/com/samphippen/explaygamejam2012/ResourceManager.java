@@ -13,12 +13,16 @@ public class ResourceManager {
 		mTextures.put("cogA", new Texture(Gdx.files.internal("circle.png")));
 		mTextures.put("tray", new Texture(Gdx.files.internal("tray.png")));
 		mTextures.put("maskbutton", new Texture(Gdx.files.internal("maskbutton.png")));
+		mTextures.put("p1wins", new Texture(Gdx.files.internal("p1_wins.png")));
+		mTextures.put("p2wins", new Texture(Gdx.files.internal("p2_wins.png")));
 	}
 	
 	public static void dispose() { 
 		mTextures.get("cogA").dispose(); 
 		mTextures.get("tray").dispose();
 		mTextures.get("maskbutton").dispose();
+		mTextures.get("p1wins").dispose();
+		mTextures.get("p2wins").dispose();
 		
 		mTextures.clear(); 
 	}

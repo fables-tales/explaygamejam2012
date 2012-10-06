@@ -1,7 +1,7 @@
 package com.samphippen.explaygamejam2012;
 
 public class GameLogic {	
-	public static float MAX_DRIVE_TO_SCREW = 360f; 
+	public static float MAX_DRIVE_TO_SCREW = 720f; 
 	
 	public TurnStage mState = TurnStage.GameStart; 	
 	public Cog mSeletedCog;
@@ -111,16 +111,24 @@ public class GameLogic {
 		if (mTotalDriveToScrew >= MAX_DRIVE_TO_SCREW) {
 			// player 1 wins!
 			System.out.println("Player 1 WINS!!!!"); 
-			mState = TurnStage.GameOver; 
+			mState = TurnStage.GameOver;
+			mPlayerID = 0; 
+			mAnimationFrame = 0; 
 		}
 		else if (mTotalDriveToScrew <= -MAX_DRIVE_TO_SCREW) {
 			// player 1 wins!
 			System.out.println("Player 2 WINS!!!!"); 
-			mState = TurnStage.GameOver; 
+			mState = TurnStage.GameOver;
+			mPlayerID = 1; 
+			mAnimationFrame = 0; 
 		}
-		else if (mAnimationFrame > 120) { 
+		else if (mAnimationFrame > 360) { 
 			mState = TurnStage.NextPlayer; 
 		}
+	}
+	
+	public void endGameTick() {
+		mAnimationFrame++; 
 	}
 }
 
