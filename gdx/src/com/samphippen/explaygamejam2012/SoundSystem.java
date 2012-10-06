@@ -34,6 +34,7 @@ public class SoundSystem {
 
         addSound("canplace");
         addSound("hasplaced");
+        addSound("CogsJammed");
     }
 
     private static void addSound(String string) {
