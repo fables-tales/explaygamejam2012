@@ -40,6 +40,7 @@ public class GameHolder implements ApplicationListener {
     @Override
     public void create() {
         ResourceManager.loadResources();
+        SoundSystem.initialize();
         System.out.println("create");
         mLogic = GameLogic.getInstance();
         
