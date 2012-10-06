@@ -13,6 +13,8 @@ public class ResourceManager {
 		mTextures.put("cogA", new Texture(Gdx.files.internal("circle.png")));
 		mTextures.put("tray", new Texture(Gdx.files.internal("tray.png")));
 		mTextures.put("maskbutton", new Texture(Gdx.files.internal("maskbutton.png")));
+		mTextures.put("rolldown", new Texture(Gdx.files.internal("rolldown.png")));
+		System.out.println(new Texture(Gdx.files.internal("rolldown.png")));
 	}
 	
 	public static void dispose() { 

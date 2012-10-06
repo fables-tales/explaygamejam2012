@@ -28,7 +28,7 @@ public class GameHolder implements ApplicationListener {
     private Cog mHeldCog;
     private boolean mHoldingCog = false;
     private Cog mLastCog;
-    private GameLogic mLogic = GameLogic.sInstance;
+    private GameLogic mLogic;
     private int mMaskButtonCountDown = 0;
     private boolean mMaskButtonPressed = false;
     private Sprite mMaskButtonSprite;
@@ -40,6 +40,9 @@ public class GameHolder implements ApplicationListener {
     @Override
     public void create() {
         ResourceManager.loadResources();
+        System.out.println("create");
+        mLogic = GameLogic.getInstance();
+        
         mTray = new Tray();
         mGraph = new CogGraph();
 
@@ -93,6 +96,7 @@ public class GameHolder implements ApplicationListener {
         mRackSprite.draw(mSpriteBatch);
         mGridManager.draw(mSpriteBatch);
         mMaskButtonSprite.draw(mSpriteBatch);
+        mLogic.mRollDownSprite.draw(mSpriteBatch);
 
         mSpriteBatch.end();
 
@@ -155,6 +159,9 @@ public class GameHolder implements ApplicationListener {
         case Animating:
             doAnimation();
             break;
+        case RollDown:
+            doRollDown();
+            break;
         case NextPlayer:
             switchPlayerView();
             break;
@@ -173,6 +180,10 @@ public class GameHolder implements ApplicationListener {
             Cog c = mGraph.mCogs.get(i);
             c.update();
         }
+    }
+
+    private void doRollDown() {
+        mLogic.rollDownTick();
     }
 
     private void createTestGraph() {

@@ -111,7 +111,7 @@ public class GridManager {
             this.blockColumn(currentPlayer);
         }
 
-        GameLogic.sInstance.placedGrid();
+        GameLogic.getInstance().placedGrid();
     }
 
     private void blockColumn(int currentPlayer) {
