@@ -79,7 +79,7 @@ public class GameHolder implements ApplicationListener {
         mBackgroundSprite = new Sprite(ResourceManager.get("background"));
         mBackgroundSprite.setPosition(0, -70);
 
-        t = ResourceManager.get("splash");
+        t = ResourceManager.get("rolldown");
         mSplashSprite = new Sprite(t);
         mSplashSprite.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
