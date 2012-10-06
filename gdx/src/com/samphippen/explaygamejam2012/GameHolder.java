@@ -94,7 +94,8 @@ public class GameHolder implements ApplicationListener {
         }
 
         mRackSprite.draw(mSpriteBatch);
-        mGridManager.draw(mSpriteBatch);
+        mGridManager.drawCurrentPlayer(mSpriteBatch, mLogic.mPlayerID);
+        mGridManager.drawOtherPlayer(mSpriteBatch, 1-mLogic.mPlayerID);
         mMaskButtonSprite.draw(mSpriteBatch);
         mLogic.mRollDownSprite.draw(mSpriteBatch);
 

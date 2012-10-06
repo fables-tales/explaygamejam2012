@@ -58,7 +58,6 @@ public class GameLogic {
 	}
 	
 	public void newTurn() { 
-		mPlayerID = mPlayerID == 0 ? 1 : 0; 
 		mAnimationFrame = 0;
 		mRollDownFrame = 0;
 		
@@ -140,7 +139,8 @@ public class GameLogic {
 			mState = TurnStage.GameOver; 
 		}
 		else if (mAnimationFrame > 120) { 
-			mState = TurnStage.RollDown; 
+			mState = TurnStage.RollDown;
+			mPlayerID = mPlayerID == 0 ? 1 : 0;
 		}
 	}
 
@@ -154,6 +154,7 @@ public class GameLogic {
         mRollDownSprite.setPosition(0, y);
         
         if (mRollDownFrame > 120){
+            
             mState = TurnStage.NextPlayer;
         }
     }
