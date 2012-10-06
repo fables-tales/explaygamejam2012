@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -23,7 +24,8 @@ public class CogGraph {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
         
-		mDrive = Cog.getCog();
+        Texture t = ResourceManager.get("bigcog");
+		mDrive = new Cog(new Sprite(t), 0, 1900);
 		mDrive.promoteToDrive();     
 		
 		mDrive.setCenterX(800 * 0.5f);
@@ -34,7 +36,7 @@ public class CogGraph {
 
 		mGraph.put(mDrive, new ArrayList<Cog>());
 		
-		mScrew = Cog.getCog();
+		mScrew = Cog.getCog(5);
 		mScrew.promoteToScrew();     
 		
 		mScrew.setCenterX(800 * 0.5f);

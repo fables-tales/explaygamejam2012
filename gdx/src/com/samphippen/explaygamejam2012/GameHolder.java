@@ -33,9 +33,10 @@ public class GameHolder implements ApplicationListener {
     private boolean mMaskButtonPressed = false;
     private Sprite mMaskButtonSprite;
     private Sprite mRackSprite;
-    private Sprite mPlayer1Wins; 
+    private Sprite mPlayer1Wins;
     private Sprite mPlayer2Wins;
-    
+    private Sprite mBackgroundSprite;
+
     private boolean mRunTurns = true;
     private SpriteBatch mSpriteBatch;
     private Tray mTray;
@@ -46,16 +47,21 @@ public class GameHolder implements ApplicationListener {
         SoundSystem.initialize();
         System.out.println("create");
         mLogic = GameLogic.getInstance();
-        
+
         mTray = new Tray();
         mGraph = new CogGraph();
 
-        Texture t = new Texture(Gdx.files.internal("tray.png"));        
+        Texture t = new Texture(Gdx.files.internal("tray.png"));
         mRackSprite = new Sprite(t);
         mRackSprite.setPosition(0, 1280 - mRackSprite.getHeight());
 
         mMaskButtonSprite = new Sprite(ResourceManager.get("maskbutton"));
+
+        mBackgroundSprite = new Sprite(ResourceManager.get("background"));
+        mBackgroundSprite.setPosition(0, -70);
         
+        
+
         mGridManager = new GridManager();
         mSpriteBatch = new SpriteBatch();
         mSpriteBatch.enableBlending();
@@ -66,13 +72,16 @@ public class GameHolder implements ApplicationListener {
 
         mPlayer1Wins = new Sprite(ResourceManager.get("p1wins"));
         mPlayer2Wins = new Sprite(ResourceManager.get("p2wins"));
-        
-        mPlayer1Wins.setPosition((800 * 0.5f) - (mPlayer1Wins.getWidth() * 0.5f), (1280 * 0.5f) - (mPlayer1Wins.getHeight() * 0.5f));
-        mPlayer2Wins.setPosition((800 * 0.5f) - (mPlayer2Wins.getWidth() * 0.5f), (1280 * 0.5f) - (mPlayer2Wins.getHeight() * 0.5f));
-        
+
+        mPlayer1Wins.setPosition((800 * 0.5f)
+                - (mPlayer1Wins.getWidth() * 0.5f), (1280 * 0.5f)
+                - (mPlayer1Wins.getHeight() * 0.5f));
+        mPlayer2Wins.setPosition((800 * 0.5f)
+                - (mPlayer2Wins.getWidth() * 0.5f), (1280 * 0.5f)
+                - (mPlayer2Wins.getHeight() * 0.5f));
+
         mDebugShapeRenderer = new ShapeRenderer();
 
-        
         mLastCog = mGraph.mDrive;
 
         // createTestGraph();
@@ -97,26 +106,27 @@ public class GameHolder implements ApplicationListener {
         mSpriteBatch.setTransformMatrix(traslate);
 
         mSpriteBatch.begin();
+        mBackgroundSprite.draw(mSpriteBatch);
 
-        mTray.draw(mSpriteBatch);
+        
         for (int i = 0; i < mGraph.mCogs.size(); i++) {
             Cog c = mGraph.mCogs.get(i);
             c.draw(mSpriteBatch);
         }
-
+        
         mRackSprite.draw(mSpriteBatch);
+        mTray.draw(mSpriteBatch);
         mGridManager.drawCurrentPlayer(mSpriteBatch, mLogic.mPlayerID);
-        mGridManager.drawOtherPlayer(mSpriteBatch, 1-mLogic.mPlayerID);
+        mGridManager.drawOtherPlayer(mSpriteBatch, 1 - mLogic.mPlayerID);
         mMaskButtonSprite.draw(mSpriteBatch);
         mLogic.mRollDownSprite.draw(mSpriteBatch);
 
-        if (mLogic.mState == TurnStage.GameOver) { 
-        	if (mLogic.mPlayerID == 0) { 
-        		mPlayer1Wins.draw(mSpriteBatch);      	
-        	}
-        	else { 
-        		mPlayer2Wins.draw(mSpriteBatch);      	
-        	}
+        if (mLogic.mState == TurnStage.GameOver) {
+            if (mLogic.mPlayerID == 0) {
+                mPlayer1Wins.draw(mSpriteBatch);
+            } else {
+                mPlayer2Wins.draw(mSpriteBatch);
+            }
         }
         mSpriteBatch.end();
 
@@ -159,7 +169,7 @@ public class GameHolder implements ApplicationListener {
 
     public void update() {
         mMaskButtonCountDown -= 1;
-        
+
         switch (mLogic.mState) {
         case ClearGameState:
             mTray.addCogs(mGraph.mCogs);
@@ -179,15 +189,21 @@ public class GameHolder implements ApplicationListener {
         case Animating:
             doAnimation();
             break;
-        case RollDown:
+        case RollDownEnd:
+        case RollDownStart:
             doRollDown();
+            break;
+        case RollDownWaiting:
+            if (Gdx.input.isTouched()) {
+                GameLogic.getInstance().rollDownWaitingTouched();
+            }
             break;
         case NextPlayer:
             switchPlayerView();
             break;
         case GameOver:
             // other stuff
-        	doGameOverEvents(); 
+            doGameOverEvents();
             break;
         default:
             break;
@@ -207,7 +223,7 @@ public class GameHolder implements ApplicationListener {
     }
 
     private void createTestGraph() {
-    	
+
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
@@ -296,14 +312,14 @@ public class GameHolder implements ApplicationListener {
 
     private void doAnimation() {
         mMaskButtonPressed = false;
-    	float oldScrewAngle = mGraph.mScrew.mAngle; 
-    	
-    	mGraph.evaluate();
-    	
-    	float newScrewAngle = mGraph.mScrew.mAngle;
-    	
-    	mLogic.mTotalDriveToScrew += oldScrewAngle - newScrewAngle; 
-    	
+        float oldScrewAngle = mGraph.mScrew.mAngle;
+
+        mGraph.evaluate();
+
+        float newScrewAngle = mGraph.mScrew.mAngle;
+
+        mLogic.mTotalDriveToScrew += oldScrewAngle - newScrewAngle;
+
         mLogic.animationTick();
     }
 
@@ -358,9 +374,9 @@ public class GameHolder implements ApplicationListener {
         if (!mHoldingCog && Gdx.input.isTouched()) {
             if (inputInMaskButton(Gdx.input.getX() * 2,
                     (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
-            		toggleMaskMode();
-            } else  if (mTray.touchInside(Gdx.input.getX() * 2,
-                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2) ) {
+                toggleMaskMode();
+            } else if (mTray.touchInside(Gdx.input.getX() * 2,
+                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
 
                 System.out.println("Selecting cog");
 
@@ -385,8 +401,7 @@ public class GameHolder implements ApplicationListener {
                     System.out.println("");
 
                     mLogic.playerSelectedCog(mHeldCog, true);
-                } 
-                else if (inputInGrid(Gdx.input.getX() * 2,
+                } else if (inputInGrid(Gdx.input.getX() * 2,
                         (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)
                         && !inputInMaskButton(
                                 Gdx.input.getX() * 2,
@@ -394,21 +409,19 @@ public class GameHolder implements ApplicationListener {
                         && mMaskButtonPressed) {
 
                     toggleGridSquare(gridX, gridY);
-                } 
+                }
             }
         }
     }
-    
 
     private void doGameOverEvents() {
-    	
-    	mLogic.endGameTick();
-    	
-    	if (mLogic.mAnimationFrame > 60 && Gdx.input.isTouched()) {
-    		mLogic.newGame();
-    	}		
-	}
 
+        mLogic.endGameTick();
+
+        if (mLogic.mAnimationFrame > 60 && Gdx.input.isTouched()) {
+            mLogic.newGame();
+        }
+    }
 
     private Vector2 getCameraOrigin() {
         return mCameraOrigin;

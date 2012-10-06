@@ -6,7 +6,9 @@ public enum TurnStage {
 	WaitingForPlayer, 
 	MovingCog, 
 	Animating,
-	RollDown,
+	RollDownStart,
+	RollDownWaiting,
+	RollDownEnd,
 	NextPlayer, 
 	GameOver
 }

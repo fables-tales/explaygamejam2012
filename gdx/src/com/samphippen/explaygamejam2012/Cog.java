@@ -2,6 +2,7 @@ package com.samphippen.explaygamejam2012;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -9,10 +10,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Cog {
 
-	static int mCogID = 0; 
+	static int mCogID = 0;
 	
-    public static Cog getCog() {
-        Cog c = new Cog(new Sprite(ResourceManager.get("cogA")), 37, mCogID++);
+    public static Cog getCog(int i) {
+        Cog c = new Cog(new Sprite(ResourceManager.get("cog" + i)), 37, mCogID++);
         return c;
     }
 
