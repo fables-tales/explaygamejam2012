@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class GameLogic {	
-	public static float MAX_DRIVE_TO_SCREW = 720f; 
+	public static float MAX_DRIVE_TO_SCREW = 1800f; 
 	public static float COG_MOVE_FRAMES = 120f;
 	
 	public TurnStage mState = TurnStage.GameStart; 	
