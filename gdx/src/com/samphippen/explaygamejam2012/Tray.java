@@ -90,7 +90,7 @@ public class Tray {
     }
     
     public void preDraw(SpriteBatch sb) {
-        mWheelCoverSprite.setPosition(0, -90);
+        mWheelCoverSprite.setPosition(0, -110);
         mWheelCoverSprite.draw(sb);    	
     }
 

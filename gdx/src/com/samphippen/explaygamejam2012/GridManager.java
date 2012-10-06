@@ -35,6 +35,11 @@ public class GridManager {
             }
         }
     }
+    
+    public void reset() { 
+    	clearPlayer(0);
+    	clearPlayer(1);
+    }
 
     private Sprite makeSprite(int x, int y, int i) {
         Texture t = new Texture(Gdx.files.internal("mask.png"));
@@ -161,14 +166,14 @@ public class GridManager {
             Sprite gridSprite = getCurrentGridSprites(playerID).get(i);
             Color sc = gridSprite.getColor();
             if (sc.a >= 0.995) {
-                System.out.println("alpha");
+                //System.out.println("alpha");
                 sc.a = 0.441f;
                 gridSprite.setColor(sc);
             }
             gridSprite.draw(sb);
             sc = gridSprite.getColor();
             if (Math.abs(sc.a-0.441) < 0.01) {
-                System.out.println("alpha");
+                //System.out.println("alpha");
                 sc.a = 1f;
                 gridSprite.setColor(sc);
             }
