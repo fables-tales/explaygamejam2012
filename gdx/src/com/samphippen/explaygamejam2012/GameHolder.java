@@ -28,9 +28,12 @@ public class GameHolder implements ApplicationListener {
     private CogGraph mGraph;
     private boolean mDebugging = true;
     private boolean mRunTurns = true;
+    private Sprite mMaskButtonSprite;
     private GameLogic mLogic = new GameLogic();
     private Sprite mRackSprite;
     private GridManager mGridManager;
+    private boolean mMaskButtonPressed = false;
+    private int mMaskButtonCountDown = 0;
 
     @Override
     public void create() {
@@ -40,9 +43,12 @@ public class GameHolder implements ApplicationListener {
         mGraph = new CogGraph();
 
         Texture t = new Texture(Gdx.files.internal("tray.png"));
-
         mRackSprite = new Sprite(t);
         mRackSprite.setPosition(0, 1280 - mRackSprite.getHeight());
+
+        t = new Texture(Gdx.files.internal("maskbutton.png"));
+        mMaskButtonSprite = new Sprite(t);
+
         mGridManager = new GridManager();
         mSpriteBatch = new SpriteBatch();
         mSpriteBatch.enableBlending();
@@ -177,6 +183,7 @@ public class GameHolder implements ApplicationListener {
 
         mRackSprite.draw(mSpriteBatch);
         mGridManager.draw(mSpriteBatch);
+        mMaskButtonSprite.draw(mSpriteBatch);
 
         mSpriteBatch.end();
 
@@ -218,19 +225,28 @@ public class GameHolder implements ApplicationListener {
         mGraph.evaluate();
 
         mCogTime += 1;
+        mMaskButtonCountDown -= 1;
         int gridX = getGridX(Gdx.input.getX() * 2);
         int gridY = getGridY((Gdx.graphics.getHeight() - Gdx.input.getY()) * 2);
         if (!mHoldingCog && Gdx.input.isTouched()) {
+            if (inputInMaskButton(Gdx.input.getX() * 2,
+                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)
+                    && mMaskButtonCountDown <= 0) {
+                this.toggleMaskMode();
+            }
             if (inputInGrid(Gdx.input.getX() * 2,
                     (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
-
-                toggleGridSquare(gridX, gridY);
+                if (mMaskButtonPressed) {
+                    toggleGridSquare(gridX, gridY);
+                }
             }
         }
 
         if (!mHoldingCog && Gdx.input.isTouched()) {
             if (mTray.touchInside(Gdx.input.getX() * 2,
-                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
+                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)
+                    && !this.inputInMaskButton(Gdx.input.getX() * 2,
+                            (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
 
                 System.out.println("Selecting cog");
 
@@ -280,6 +296,25 @@ public class GameHolder implements ApplicationListener {
             Cog c = mGraph.mCogs.get(i);
             c.update();
         }
+    }
+
+    private void toggleMaskMode() {
+        mMaskButtonPressed = !mMaskButtonPressed;
+        System.out.println("triggering " + mMaskButtonPressed);
+        mMaskButtonCountDown = 10;
+        if (mMaskButtonPressed == true) {
+            mGridManager.clearPlayer(mLogic.mPlayerID);
+            mGridManager.resetCountdown();
+        } else if (mMaskButtonPressed == false) {
+            mGridManager.hideCandidateSquares();
+        }
+    }
+
+    private boolean inputInMaskButton(int x, int y) {
+        return (x > mMaskButtonSprite.getX() && x < mMaskButtonSprite.getX()
+                + mMaskButtonSprite.getHeight())
+                && (y > mMaskButtonSprite.getY() && y < mMaskButtonSprite
+                        .getY() + mMaskButtonSprite.getHeight());
     }
 
     private void toggleGridSquare(int gridX, int gridY) {

@@ -55,15 +55,15 @@ public class GridManager {
                 if (this.isCandidateSquare(gridX, gridY)) {
                     this.block(gridX, gridY, player);
                 } else {
-                    mTouchedSquares = 0;
                     this.hideCandidateSquares();
                 }
             }
         }
     }
 
-    private void hideCandidateSquares() {
+    public void hideCandidateSquares() {
         int gridIndex;
+        mTouchedSquares = 0;
         for (int x = 0; x < SQUARES_PER_ROW; x++) {
             int y = mSquareTouchY;
             gridIndex = x + y * SQUARES_PER_ROW;
@@ -75,6 +75,7 @@ public class GridManager {
             gridIndex = x + y * SQUARES_PER_ROW;
             mGridSprites.get(gridIndex).setColor(1, 1, 1, 0.0f);
         }
+        
     }
 
     private void block(int gridX, int gridY, int currentPlayer) {
@@ -89,7 +90,7 @@ public class GridManager {
 
     private void blockColumn(int currentPlayer) {
         // TODO Auto-generated method stub
-        
+
         int x = mSquareTouchX;
         for (int y = 0; y < NUMBER_OF_ROWS; y++) {
             int gridIndex = x + y * SQUARES_PER_ROW;
@@ -129,23 +130,31 @@ public class GridManager {
         mGridSprites.get(gridIndex).setColor(1, 1, 1, 0.9f);
     }
 
-    private int countPlayerSquares(int player) {
-        int count = 0;
-        for (int i = 0; i < mGridPlayer.size(); i++) {
-            int gridPlayer = mGridPlayer.get(i);
-            if (player == gridPlayer) count++;
-
-        }
-
-        return count;
-    }
-
     public void draw(SpriteBatch sb) {
         mToggleDelay--;
         for (int i = 0; i < mGridSprites.size(); i++) {
             Sprite gridSprite = mGridSprites.get(i);
             gridSprite.draw(sb);
         }
+    }
+
+    public void clearPlayer(int mPlayerID) {
+        this.hideCandidateSquares();
+        for (int y = 0; y < NUMBER_OF_ROWS; y++) {
+            for (int x = 0; x < SQUARES_PER_ROW; x++) {
+                int gridIndex = x + y * SQUARES_PER_ROW;
+                int currentPlayer = mGridPlayer.get(gridIndex);
+                if (currentPlayer == mPlayerID) {
+                    mGridPlayer.set(gridIndex, 0);
+                    mGridSprites.get(gridIndex).setColor(1, 1, 1, 0);
+                }
+            }
+        }
+        
+    }
+
+    public void resetCountdown() {
+        mToggleDelay = 10;
     }
 
 }
