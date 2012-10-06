@@ -20,6 +20,8 @@ public class ResourceManager {
         mTextures.put("tray", new Texture(Gdx.files.internal("cogcover.png")));
         mTextures.put("maskbutton",
                 new Texture(Gdx.files.internal("maskbutton.png")));
+        mTextures.put("maskbuttonpressed",
+                new Texture(Gdx.files.internal("maskbuttonpressed.png")));
         mTextures.put("p1wins", new Texture(Gdx.files.internal("p1_wins.png")));
         mTextures.put("p2wins", new Texture(Gdx.files.internal("p2_wins.png")));
         mTextures.put("rolldown",

@@ -32,6 +32,7 @@ public class GameHolder implements ApplicationListener {
     private int mMaskButtonCountDown = 0;
     private boolean mMaskButtonPressed = false;
     private Sprite mMaskButtonSprite;
+    private Sprite mMaskButtonSpritePressed;
     private Sprite mRackSprite;
     private Sprite mPlayer1Wins;
     private Sprite mPlayer2Wins;
@@ -58,6 +59,7 @@ public class GameHolder implements ApplicationListener {
         mRackSprite.setPosition(0, 1280 - mRackSprite.getHeight());
 
         mMaskButtonSprite = new Sprite(ResourceManager.get("maskbutton"));
+        mMaskButtonSpritePressed = new Sprite(ResourceManager.get("maskbuttonpressed"));
 
         mBackgroundSprite = new Sprite(ResourceManager.get("background"));
         mBackgroundSprite.setPosition(0, -70);
@@ -126,7 +128,13 @@ public class GameHolder implements ApplicationListener {
         mTray.draw(mSpriteBatch);
         mGridManager.drawCurrentPlayer(mSpriteBatch, mLogic.mPlayerID);
         mGridManager.drawOtherPlayer(mSpriteBatch, 1 - mLogic.mPlayerID);
-        mMaskButtonSprite.draw(mSpriteBatch);
+        
+        if (mMaskButtonPressed) {
+            mMaskButtonSpritePressed.draw(mSpriteBatch);
+        } else {
+            mMaskButtonSprite.draw(mSpriteBatch);
+        }
+        
         mLogic.mRollDownSprite.draw(mSpriteBatch);
 
         if (mLogic.mState == TurnStage.GameOver) {
