@@ -15,6 +15,8 @@ public class ResourceManager {
 		mTextures.put("maskbutton", new Texture(Gdx.files.internal("maskbutton.png")));
 		mTextures.put("p1wins", new Texture(Gdx.files.internal("p1_wins.png")));
 		mTextures.put("p2wins", new Texture(Gdx.files.internal("p2_wins.png")));
+		mTextures.put("rolldown", new Texture(Gdx.files.internal("rolldown.png")));
+		System.out.println(new Texture(Gdx.files.internal("rolldown.png")));
 	}
 	
 	public static void dispose() { 

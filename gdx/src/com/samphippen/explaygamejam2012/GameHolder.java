@@ -28,7 +28,7 @@ public class GameHolder implements ApplicationListener {
     private Cog mHeldCog;
     private boolean mHoldingCog = false;
     private Cog mLastCog;
-    private GameLogic mLogic = GameLogic.sInstance;
+    private GameLogic mLogic;
     private int mMaskButtonCountDown = 0;
     private boolean mMaskButtonPressed = false;
     private Sprite mMaskButtonSprite;
@@ -43,6 +43,9 @@ public class GameHolder implements ApplicationListener {
     @Override
     public void create() {
         ResourceManager.loadResources();
+        System.out.println("create");
+        mLogic = GameLogic.getInstance();
+        
         mTray = new Tray();
         mGraph = new CogGraph();
 
@@ -101,8 +104,10 @@ public class GameHolder implements ApplicationListener {
         }
 
         mRackSprite.draw(mSpriteBatch);
-        mGridManager.draw(mSpriteBatch);
+        mGridManager.drawCurrentPlayer(mSpriteBatch, mLogic.mPlayerID);
+        mGridManager.drawOtherPlayer(mSpriteBatch, 1-mLogic.mPlayerID);
         mMaskButtonSprite.draw(mSpriteBatch);
+        mLogic.mRollDownSprite.draw(mSpriteBatch);
 
         if (mLogic.mState == TurnStage.GameOver) { 
         	if (mLogic.mPlayerID == 0) { 
@@ -173,6 +178,9 @@ public class GameHolder implements ApplicationListener {
         case Animating:
             doAnimation();
             break;
+        case RollDown:
+            doRollDown();
+            break;
         case NextPlayer:
             switchPlayerView();
             break;
@@ -193,7 +201,12 @@ public class GameHolder implements ApplicationListener {
         }
     }
 
-	private void createTestGraph() {
+    private void doRollDown() {
+        mLogic.rollDownTick();
+    }
+
+    private void createTestGraph() {
+    	
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
@@ -291,8 +304,6 @@ public class GameHolder implements ApplicationListener {
     	mLogic.mTotalDriveToScrew += oldScrewAngle - newScrewAngle; 
     	
         mLogic.animationTick();
-        
-        
     }
 
     private void doMovingEvents() {

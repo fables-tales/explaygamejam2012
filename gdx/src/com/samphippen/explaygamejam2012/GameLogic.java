@@ -1,5 +1,8 @@
 package com.samphippen.explaygamejam2012;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 public class GameLogic {	
 	public static float MAX_DRIVE_TO_SCREW = 720f; 
 	
@@ -10,9 +13,26 @@ public class GameLogic {
 	public float mCogOriginalY; 
 	public int mPlayerID; 
 	
-	public static final GameLogic sInstance = new GameLogic(); 
+	private static GameLogic sInstance;
+	
+	public static GameLogic getInstance() {
+	    System.out.println("called");
+	    if (sInstance == null) sInstance = new GameLogic();
+	    return sInstance;
+	}
+	
 	public int mAnimationFrame = 0; 
 	public float mTotalDriveToScrew;
+
+    private int mRollDownFrame;
+    public Sprite mRollDownSprite;
+    
+    private GameLogic() {
+        Texture t = ResourceManager.get("rolldown");
+        System.out.println(t);
+        mRollDownSprite = new Sprite(t);
+        mRollDownSprite.setPosition(0, 1280);
+    }
 	
 	private void resetMove() { 
 		mCogWasFromBoard = false; 
@@ -38,8 +58,8 @@ public class GameLogic {
 	}
 	
 	public void newTurn() { 
-		mPlayerID = mPlayerID == 0 ? 1 : 0; 
 		mAnimationFrame = 0;
+		mRollDownFrame = 0;
 		
 		resetMove(); 
 		
@@ -123,12 +143,28 @@ public class GameLogic {
 			mAnimationFrame = 0; 
 		}
 		else if (mAnimationFrame > 360) { 
-			mState = TurnStage.NextPlayer; 
+			mState = TurnStage.RollDown;
+			mPlayerID = mPlayerID == 0 ? 1 : 0;
 		}
 	}
 	
 	public void endGameTick() {
 		mAnimationFrame++; 
 	}
+
+    public void rollDownTick() {
+        mRollDownFrame++;
+        
+        float t = (mRollDownFrame-60)/2;
+        float y = 2*(t*t); 
+        
+        
+        mRollDownSprite.setPosition(0, y);
+        
+        if (mRollDownFrame > 120){
+            
+            mState = TurnStage.NextPlayer;
+        }
+    }
 }
 

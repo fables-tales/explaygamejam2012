@@ -94,7 +94,6 @@ public class GridManager {
     }
 
     private List<Sprite> getCurrentGridSprites(int currentPlayerID) {
-        System.out.println("id = " + currentPlayerID);
         if (currentPlayerID == 1) {
             return mGridSprites1;
         } else {
@@ -111,7 +110,7 @@ public class GridManager {
             this.blockColumn(currentPlayer);
         }
 
-        GameLogic.sInstance.placedGrid();
+        GameLogic.getInstance().placedGrid();
     }
 
     private void blockColumn(int currentPlayer) {
@@ -155,14 +154,31 @@ public class GridManager {
         setSpriteOpacity(currentPlayer, gridIndex, 0.9f);
     }
 
-    public void draw(SpriteBatch sb) {
+    public void drawCurrentPlayer(SpriteBatch sb, int playerID) {
         mToggleDelay--;
-        for (int i = 0; i < mGridSprites1.size(); i++) {
-            Sprite gridSprite = mGridSprites1.get(i);
+        for (int i = 0; i < getCurrentGridSprites(playerID).size(); i++) {
+            Sprite gridSprite = getCurrentGridSprites(playerID).get(i);
+            Color sc = gridSprite.getColor();
+            System.out.println(sc.a);
+            if (sc.a >= 0.995) {
+                System.out.println("alpha");
+                sc.a = 0.441f;
+                gridSprite.setColor(sc);
+            }
             gridSprite.draw(sb);
+            sc = gridSprite.getColor();
+            if (Math.abs(sc.a-0.441) < 0.01) {
+                System.out.println("alpha");
+                sc.a = 1f;
+                gridSprite.setColor(sc);
+            }
         }
-        for (int i = 0; i < mGridSprites2.size(); i++) {
-            Sprite gridSprite = mGridSprites2.get(i);
+    }
+    
+    public void drawOtherPlayer(SpriteBatch sb, int playerID) {
+        mToggleDelay--;
+        for (int i = 0; i < getCurrentGridSprites(playerID).size(); i++) {
+            Sprite gridSprite = getCurrentGridSprites(playerID).get(i);
             gridSprite.draw(sb);
         }
     }
