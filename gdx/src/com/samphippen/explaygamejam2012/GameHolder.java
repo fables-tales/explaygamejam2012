@@ -28,7 +28,7 @@ public class GameHolder implements ApplicationListener {
     private Cog mHeldCog;
     private boolean mHoldingCog = false;
     private Cog mLastCog;
-    private GameLogic mLogic = new GameLogic();
+    private GameLogic mLogic = GameLogic.sInstance;
     private int mMaskButtonCountDown = 0;
     private boolean mMaskButtonPressed = false;
     private Sprite mMaskButtonSprite;
@@ -388,7 +388,7 @@ public class GameHolder implements ApplicationListener {
                 mGridManager.clearPlayer(mLogic.mPlayerID);
                 mGridManager.resetCountdown();
             } else if (mMaskButtonPressed == false) {
-                mGridManager.hideCandidateSquares();
+                mGridManager.hideCandidateSquares(mLogic.mPlayerID);
             }
         }
     }

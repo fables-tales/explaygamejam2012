@@ -8,7 +8,9 @@ public class GameLogic {
 	public float mCogOriginalX;
 	public float mCogOriginalY; 
 	public int mPlayerID; 
-	public int mAnimationFrame = 0; 
+	public int mAnimationFrame = 0;
+	
+	public static final GameLogic sInstance = new GameLogic(); 
 	
 	private void resetMove() { 
 		mCogWasFromBoard = false; 
@@ -50,6 +52,11 @@ public class GameLogic {
 		}
 		
 		mState = TurnStage.MovingCog; 
+	}
+	
+	public void placedGrid() {
+	    mState = TurnStage.Animating;
+	    resetMove();
 	}
 	
 	public void playerPlacedCog(boolean ontoBoard) { 	
