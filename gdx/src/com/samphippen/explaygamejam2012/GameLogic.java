@@ -82,11 +82,23 @@ public class GameLogic {
 		resetMove(); 
 	}		
 	
+	public void playerFailedToPlaceCog() {
+		if (mCogWasFromBoard == true) {
+			// the cog has been moved back to its original position
+			mSeletedCog.setCenterX(mCogOriginalX);
+			mSeletedCog.setCenterY(mCogOriginalY); 
+		}
+		
+		mState = TurnStage.WaitingForPlayer;
+		
+		resetMove();
+	}	
+	
 	public void animationTick() {
 		mAnimationFrame++; 
 		
 		if (mAnimationFrame > 120) { 
 			mState = TurnStage.NextPlayer; 
 		}
-	}	
+	}
 }

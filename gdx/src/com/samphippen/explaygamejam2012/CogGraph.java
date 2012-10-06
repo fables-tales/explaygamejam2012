@@ -268,6 +268,19 @@ public class CogGraph {
 
 		mCogs.remove(cog);
 	}
+	
+	public void clear() {
+		
+		for (int i = mCogs.size() - 1; i >= 0; --i) {
+			
+			Cog cog = mCogs.get(i); 
+			
+			if (cog.getIsFixed() == false){ 
+				removeCog(cog); 
+			}
+		}
+
+	}
 
 	public boolean remove(Cog parent, Cog cog) {		
 		

@@ -27,6 +27,17 @@ public class Tray {
 		mCogs.add(cog);
 	}
 	
+	public void addCogs(List<Cog> cogs) {
+		
+		for (int i = 0; i < cogs.size(); i++) { 
+			Cog cog = cogs.get(i); 
+			
+			if (cog.getIsFixed() == false) { 
+				mCogs.add(cog); 
+			}
+		}		
+	}
+	
     public Cog getCog() {
         if (mCogs.size() > 0) {
             return mCogs.remove(0);

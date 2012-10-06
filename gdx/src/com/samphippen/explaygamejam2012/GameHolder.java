@@ -188,27 +188,45 @@ public class GameHolder implements ApplicationListener {
     	switch (mLogic.mState)
     	{
     		case ClearGameState:
+    			mTray.addCogs(mGraph.mCogs); 
+    			mGraph.clear(); 
+    			mLogic.sartGame();
     			break; 
     		case GameStart:
+    			// other stuff 
+    			mLogic.newTurn(); 
     			break; 
     		case WaitingForPlayer:
+    			doSelectingEvents(); 
     			break; 
     		case MovingCog:
+    			doMovingEvents(); 
     			break; 
     		case Animating:
+    			doAnimation(); 
     			break; 
     		case NextPlayer:
+    			switchPlayerView();
     			break; 
     		case GameOver:
+    			// other stuff 
+    			mLogic.newGame(); 
     			break;     			
     		default: 
     			break; 
     		
-    	}
-    	
-    	mGraph.evaluate(); 
+    	}        
     	
         mCogTime += 1;
+
+        for (int i = 0; i < mGraph.mCogs.size(); i++) {
+            Cog c = mGraph.mCogs.get(i);
+            c.update();
+        }
+    }
+
+
+	private void doSelectingEvents() {
         if (!mHoldingCog && Gdx.input.isTouched()) {
             if (mTray.touchInside(Gdx.input.getX()*2, (Gdx.graphics.getHeight() - Gdx.input.getY())*2)) {
             	
@@ -219,6 +237,8 @@ public class GameHolder implements ApplicationListener {
                 mGraph.addCog(mHeldCog);
                 mHeldCog.setMouseTracking(true);
                 mCogTime = 0;
+                
+                mLogic.playerSelectedCog(mHeldCog, false);
             }
             else { 
             	mHeldCog = mGraph.touchOnCog(Gdx.input.getX()*2, (Gdx.graphics.getHeight() - Gdx.input.getY())*2); 
@@ -231,9 +251,14 @@ public class GameHolder implements ApplicationListener {
             		
             		System.out.println("");
             		System.out.println("");
+            		
+            		mLogic.playerSelectedCog(mHeldCog, true);
             	}            	
             }            	
         }
+	}
+	
+	private void doMovingEvents() {
 
         if (mHoldingCog && !Gdx.input.isTouched()) {
             
@@ -244,9 +269,17 @@ public class GameHolder implements ApplicationListener {
             
             if (mGraph.dropCog(mHeldCog) == false) {
             	System.out.println("Dropping failed");
-            	mGraph.removeCog(mHeldCog); 
-            	mTray.addCog(mHeldCog); 
+            	
+            	if (mLogic.mCogWasFromBoard == false) { 
+	            	mGraph.removeCog(mHeldCog); 
+	            	mTray.addCog(mHeldCog); 
+            	}
+            	
+            	mLogic.playerFailedToPlaceCog();
             }
+            else {                
+                mLogic.playerPlacedCog(true);
+            } 
             
     		System.out.println("");
     		System.out.println("");
@@ -255,14 +288,18 @@ public class GameHolder implements ApplicationListener {
             mHeldCog = null;
             mHoldingCog = false;
         }
+	}
+	
+	private void doAnimation() {		
+		mLogic.animationTick(); 
+		mGraph.evaluate(); 		
+	}
 
-        for (int i = 0; i < mGraph.mCogs.size(); i++) {
-            Cog c = mGraph.mCogs.get(i);
-            c.update();
-        }
-    }
-
-    @Override
+    private void switchPlayerView() {
+    	mLogic.newTurn(); 
+	}
+	
+	@Override
     public void render() {
         update();
         draw();
