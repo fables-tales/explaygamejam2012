@@ -144,6 +144,7 @@ public class GameLogic {
 			// player 1 wins!
 			System.out.println("Player 1 WINS!!!!"); 
 			mState = TurnStage.GameOver;
+			SoundSystem.playGameOver();
 			mPlayerID = 0; 
 			mAnimationFrame = 0; 
 		}
@@ -151,6 +152,7 @@ public class GameLogic {
 			// player 1 wins!
 			System.out.println("Player 2 WINS!!!!"); 
 			mState = TurnStage.GameOver;
+			SoundSystem.playGameOver();
 			mPlayerID = 1; 
 			mAnimationFrame = 0; 
 		}

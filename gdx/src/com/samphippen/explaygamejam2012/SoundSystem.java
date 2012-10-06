@@ -13,6 +13,7 @@ public class SoundSystem {
     private static Music sTurnMusic;
     private static Music sBetweenMusic;
     private static Music sGrinding;
+    private static Music sGameOverMusic;
     private static HashMap<String, Sound> mSoundEffects = new HashMap<String, Sound>();
     private static HashMap<String, Boolean> mSoundCanPlay = new HashMap<String, Boolean>();
     private static Timer t = new Timer();
@@ -24,10 +25,12 @@ public class SoundSystem {
                 .internal("Topology_-_Michael_Nyman_-_And_Do_They_Do_2.mp3"));
 
         sGrinding = Gdx.audio.newMusic(Gdx.files.internal("grindingCogs.mp3"));
+        sGameOverMusic = Gdx.audio.newMusic(Gdx.files.internal("win.mp3"));
 
         sTurnMusic.setLooping(true);
         sBetweenMusic.setLooping(true);
         sGrinding.setLooping(true);
+        sGameOverMusic.setLooping(false);
 
         addSound("canplace");
         addSound("hasplaced");
@@ -70,5 +73,12 @@ public class SoundSystem {
             }, timeoutMS);
         }
 
+    }
+
+    public static void playGameOver() {
+        sBetweenMusic.stop();
+        sGrinding.stop();
+        sTurnMusic.stop();
+        sGameOverMusic.play();
     }
 }
