@@ -17,6 +17,7 @@ public class ResourceManager {
 		mTextures.put("p1wins", new Texture(Gdx.files.internal("p1_wins.png")));
 		mTextures.put("p2wins", new Texture(Gdx.files.internal("p2_wins.png")));
 		mTextures.put("rolldown", new Texture(Gdx.files.internal("rolldown.png")));
+		mTextures.put("background", new Texture(Gdx.files.internal("background.png")));
 		
 		for (String key : mTextures.keySet()) {
 		    mTextures.get(key).setFilter(TextureFilter.Linear, TextureFilter.Linear);

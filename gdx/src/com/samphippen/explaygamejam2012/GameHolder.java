@@ -35,6 +35,7 @@ public class GameHolder implements ApplicationListener {
     private Sprite mRackSprite;
     private Sprite mPlayer1Wins;
     private Sprite mPlayer2Wins;
+    private Sprite mBackgroundSprite;
 
     private boolean mRunTurns = true;
     private SpriteBatch mSpriteBatch;
@@ -55,6 +56,10 @@ public class GameHolder implements ApplicationListener {
         mRackSprite.setPosition(0, 1280 - mRackSprite.getHeight());
 
         mMaskButtonSprite = new Sprite(ResourceManager.get("maskbutton"));
+        
+        mBackgroundSprite = new Sprite(ResourceManager.get("background"));
+        
+        
 
         mGridManager = new GridManager();
         mSpriteBatch = new SpriteBatch();
@@ -100,6 +105,7 @@ public class GameHolder implements ApplicationListener {
         mSpriteBatch.setTransformMatrix(traslate);
 
         mSpriteBatch.begin();
+        mBackgroundSprite.draw(mSpriteBatch);
 
         mTray.draw(mSpriteBatch);
         for (int i = 0; i < mGraph.mCogs.size(); i++) {
