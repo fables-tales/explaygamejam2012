@@ -17,7 +17,7 @@ public class GameHolder implements ApplicationListener {
 
     private SpriteBatch mSpriteBatch;
     private ShapeRenderer mDebugShapeRenderer;
-    
+
     private Camera mCamera;
     private Vector2 mCameraOrigin = new Vector2(0, 0);
     private Tray mTray;
@@ -168,8 +168,7 @@ public class GameHolder implements ApplicationListener {
         mSpriteBatch.setTransformMatrix(traslate);
 
         mSpriteBatch.begin();
-        
-        
+
         mTray.draw(mSpriteBatch);
         for (int i = 0; i < mGraph.mCogs.size(); i++) {
             Cog c = mGraph.mCogs.get(i);
@@ -219,11 +218,12 @@ public class GameHolder implements ApplicationListener {
         mGraph.evaluate();
 
         mCogTime += 1;
-        int gridX = getGridX(Gdx.input.getX()*2);
+        int gridX = getGridX(Gdx.input.getX() * 2);
         int gridY = getGridY((Gdx.graphics.getHeight() - Gdx.input.getY()) * 2);
         if (!mHoldingCog && Gdx.input.isTouched()) {
-            if (inputInGrid(Gdx.input.getX() * 2, (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
-                
+            if (inputInGrid(Gdx.input.getX() * 2,
+                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
+
                 toggleGridSquare(gridX, gridY);
             }
         }
@@ -283,21 +283,21 @@ public class GameHolder implements ApplicationListener {
     }
 
     private void toggleGridSquare(int gridX, int gridY) {
-        mGridManager.toggle(gridX, gridY, mLogic.mPlayerID);
+        mGridManager.receiveTouch(gridX, gridY, mLogic.mPlayerID);
     }
 
     private int getGridY(int y) {
         // TODO Auto-generated method stub
-        return y / (1280/GridManager.NUMBER_OF_ROWS);
+        return y / (1280 / GridManager.NUMBER_OF_ROWS);
     }
 
     private int getGridX(int x) {
-        return x / (800/GridManager.SQUARES_PER_ROW);
+        return x / (800 / GridManager.SQUARES_PER_ROW);
     }
 
     private boolean inputInGrid(int x, int y) {
-        //rack and tray both occupy 64 pixels of space at the top of the screen
-        return y > 64 && y < 1280-64;
+        // rack and tray both occupy 64 pixels of space at the top of the screen
+        return y > 64 && y < 1280 - 64;
     }
 
     @Override

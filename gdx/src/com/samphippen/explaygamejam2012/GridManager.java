@@ -17,6 +17,10 @@ public class GridManager {
     private List<Integer> mGridPlayer = new ArrayList<Integer>();
     private int mToggleDelay = 10;
 
+    private int mTouchedSquares = 0;
+    private int mSquareTouchX;
+    private int mSquareTouchY;
+
     public GridManager() {
         for (int y = 0; y < NUMBER_OF_ROWS; y++) {
             for (int x = 0; x < SQUARES_PER_ROW; x++) {
@@ -34,28 +38,106 @@ public class GridManager {
         int width = 800;
         s.setPosition(width / SQUARES_PER_ROW * x, height / NUMBER_OF_ROWS * y
                 + yOffset);
-        s.setSize(width/SQUARES_PER_ROW, height/NUMBER_OF_ROWS);
+        s.setSize(width / SQUARES_PER_ROW, height / NUMBER_OF_ROWS);
         s.setColor(1, 1, 1, 0);
         return s;
     }
 
-    public void toggle(int gridX, int gridY, int player) {
-        
+    public void receiveTouch(int gridX, int gridY, int player) {
         if (mToggleDelay <= 0) {
-            System.out.println("bees");
             mToggleDelay = 10;
-            int gridIndex = gridX + gridY * SQUARES_PER_ROW;
-            Sprite currentSprite = mGridSprites.get(gridIndex);
-            int currentPlayer = mGridPlayer.get(gridIndex);
-            if (currentPlayer == 0) {
-                currentSprite.setColor(1, 1, 1, 1);
-                mGridPlayer.set(gridIndex, player);
-            } else if (currentPlayer == player) {
-                currentSprite.setColor(1, 1, 1, 0);
-                mGridPlayer.set(gridIndex, 0);
+            if (mTouchedSquares == 0) {
+                mSquareTouchX = gridX;
+                mSquareTouchY = gridY;
+                mTouchedSquares++;
+                this.showCandidateSquares();
+            } else if (mTouchedSquares == 1) {
+                if (this.isCandidateSquare(gridX, gridY)) {
+                    this.block(gridX, gridY, player);
+                } else {
+                    mTouchedSquares = 0;
+                    this.hideCandidateSquares();
+                }
             }
         }
+    }
 
+    private void hideCandidateSquares() {
+        int gridIndex;
+        for (int x = 0; x < SQUARES_PER_ROW; x++) {
+            int y = mSquareTouchY;
+            gridIndex = x + y * SQUARES_PER_ROW;
+            mGridSprites.get(gridIndex).setColor(1, 1, 1, 0.0f);
+        }
+
+        for (int y = 0; y < NUMBER_OF_ROWS; y++) {
+            int x = mSquareTouchX;
+            gridIndex = x + y * SQUARES_PER_ROW;
+            mGridSprites.get(gridIndex).setColor(1, 1, 1, 0.0f);
+        }
+    }
+
+    private void block(int gridX, int gridY, int currentPlayer) {
+        assert isCandidateSquare(gridX, gridY);
+        this.hideCandidateSquares();
+        if (gridY == mSquareTouchY) {
+            this.blockRow(currentPlayer);
+        } else if (gridX == mSquareTouchX) {
+            this.blockColumn(currentPlayer);
+        }
+    }
+
+    private void blockColumn(int currentPlayer) {
+        // TODO Auto-generated method stub
+        
+        int x = mSquareTouchX;
+        for (int y = 0; y < NUMBER_OF_ROWS; y++) {
+            int gridIndex = x + y * SQUARES_PER_ROW;
+            mGridSprites.get(gridIndex).setColor(1, 1, 1, 1f);
+            mGridPlayer.set(gridIndex, currentPlayer);
+        }
+    }
+
+    private void blockRow(int currentPlayer) {
+        int y = mSquareTouchY;
+        for (int x = 0; x < SQUARES_PER_ROW; x++) {
+            int gridIndex = x + y * SQUARES_PER_ROW;
+            mGridSprites.get(gridIndex).setColor(1, 1, 1, 1f);
+            mGridPlayer.set(gridIndex, currentPlayer);
+        }
+    }
+
+    private boolean isCandidateSquare(int gridX, int gridY) {
+        return gridX == mSquareTouchX || gridY == mSquareTouchY;
+    }
+
+    private void showCandidateSquares() {
+        int gridIndex = mSquareTouchX + mSquareTouchY * SQUARES_PER_ROW;
+
+        for (int x = 0; x < SQUARES_PER_ROW; x++) {
+            int y = mSquareTouchY;
+            gridIndex = x + y * SQUARES_PER_ROW;
+            mGridSprites.get(gridIndex).setColor(1, 1, 1, 0.5f);
+        }
+
+        for (int y = 0; y < NUMBER_OF_ROWS; y++) {
+            int x = mSquareTouchX;
+            gridIndex = x + y * SQUARES_PER_ROW;
+            mGridSprites.get(gridIndex).setColor(1, 1, 1, 0.5f);
+        }
+        gridIndex = mSquareTouchX + mSquareTouchY * SQUARES_PER_ROW;
+        mGridSprites.get(gridIndex).setColor(1, 1, 1, 0.9f);
+    }
+
+    private int countPlayerSquares(int player) {
+        int count = 0;
+        for (int i = 0; i < mGridPlayer.size(); i++) {
+            int gridPlayer = mGridPlayer.get(i);
+            if (player == gridPlayer) count++;
+
+        }
+
+        return count;
     }
 
     public void draw(SpriteBatch sb) {
