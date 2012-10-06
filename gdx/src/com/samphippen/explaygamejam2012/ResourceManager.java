@@ -32,7 +32,7 @@ public class ResourceManager {
         mTextures.put("wheelcover",
                 new Texture(Gdx.files.internal("wheelcover.png")));
         
-        mTextures.put("splash", new Texture(Gdx.files.internal("startup.png")));
+        mTextures.put("splash", new Texture(Gdx.files.internal("text.png")));
 
         for (String key : mTextures.keySet()) {
             mTextures.get(key).setFilter(TextureFilter.Linear,

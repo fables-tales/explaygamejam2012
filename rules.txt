@@ -1,0 +1,22 @@
+InCogneto: 
+
+A turn based game, controlled with the little finger: 
+
+With your opponent choose whether your hostage is the Moose or the bald Hedgehog.
+
+To win you must force the opponent's hostage off the rack. 
+To do this you must build a working set of gears that can turn the rack in the best direction to push their hostage off their seat. 
+
+To push the Moose off, move the rack to the left. 
+To push the Bald Hedgehog off, move the rack to the right. 
+
+The winner is the first to dunk the hostage. 
+
+On each go a player can choose to: 
+Add a cog
+Remove a Cog
+Change one of the oppositions Cogs
+Make a Cog a Crumble Cog
+Move the CogMask. 
+
+At the end of each go the Drive Cog will turn.
