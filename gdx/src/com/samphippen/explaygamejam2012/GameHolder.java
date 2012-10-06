@@ -262,6 +262,7 @@ public class GameHolder implements ApplicationListener {
     }
 
     private void doAnimation() {
+        mMaskButtonPressed = false;
         mLogic.animationTick();
         mGraph.evaluate();
     }
