@@ -56,8 +56,9 @@ public class GameHolder implements ApplicationListener {
         mRackSprite.setPosition(0, 1280 - mRackSprite.getHeight());
 
         mMaskButtonSprite = new Sprite(ResourceManager.get("maskbutton"));
-        
+
         mBackgroundSprite = new Sprite(ResourceManager.get("background"));
+        mBackgroundSprite.setPosition(0, -70);
         
         
 

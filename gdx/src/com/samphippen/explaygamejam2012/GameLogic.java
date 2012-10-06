@@ -148,6 +148,7 @@ public class GameLogic {
 		}
 		else if (mAnimationFrame > 360) { 
 			mState = TurnStage.RollDownStart;
+			SoundSystem.stopGrinding();
 		}
 	}
 	
