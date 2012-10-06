@@ -353,7 +353,10 @@ public class GameHolder implements ApplicationListener {
         float newScrewAngle = mGraph.mScrew.mAngle;
 
         mLogic.mTotalDriveToScrew += oldScrewAngle - newScrewAngle;
-        mRackSprite.translate((oldScrewAngle - newScrewAngle)*0.2f, 0);
+        if (Math.abs(oldScrewAngle - newScrewAngle) > 0.1) {
+            mRackSprite.translate((oldScrewAngle - newScrewAngle)*0.2f, 0);
+            SoundSystem.playWithDelay("Rack", 500);
+        }
 
         mLogic.animationTick();
     }
