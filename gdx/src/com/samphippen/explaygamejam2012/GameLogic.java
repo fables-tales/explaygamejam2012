@@ -101,6 +101,7 @@ public class GameLogic {
 				// the cog has been moved
 				mState = TurnStage.Animating;
 				SoundSystem.playBetweenMusic();
+				SoundSystem.playWithDelay("hasplaced", 100);
 			}
 		}
 		else if (!mCogWasFromBoard && !ontoBoard)
@@ -118,6 +119,7 @@ public class GameLogic {
 			// the cog started in the tray and ended on the board 
 			mState = TurnStage.Animating;
 			SoundSystem.playBetweenMusic();
+			SoundSystem.playWithDelay("hasplaced", 100);
 		}
 		
 		resetMove(); 

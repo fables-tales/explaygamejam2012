@@ -154,7 +154,11 @@ public class Cog {
 
 	public void setCanPlace(boolean canPlace) {
 		
-		mCanPlace = canPlace; 
+		mCanPlace = canPlace;
+		if (canPlace) {
+		    
+		    SoundSystem.playWithDelay("canplace", 500);
+		}
 		
 		mSprite.setColor(1, 1, 1, mCanPlace == false ? 0.5f : 1f); 
 	}
