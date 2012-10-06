@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 
 public class ResourceManager {
 	public static Map<String, Texture> mTextures = new HashMap<String, Texture>(); 
@@ -16,6 +17,11 @@ public class ResourceManager {
 		mTextures.put("p1wins", new Texture(Gdx.files.internal("p1_wins.png")));
 		mTextures.put("p2wins", new Texture(Gdx.files.internal("p2_wins.png")));
 		mTextures.put("rolldown", new Texture(Gdx.files.internal("rolldown.png")));
+		
+		for (String key : mTextures.keySet()) {
+		    mTextures.get(key).setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		}
+		
 		System.out.println(new Texture(Gdx.files.internal("rolldown.png")));
 	}
 	
