@@ -81,6 +81,7 @@ public class GameHolder implements ApplicationListener {
 
         t = ResourceManager.get("splash");
         mSplashSprite = new Sprite(t);
+        mSplashSprite.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         mGridManager = new GridManager();
         mSpriteBatch = new SpriteBatch();
