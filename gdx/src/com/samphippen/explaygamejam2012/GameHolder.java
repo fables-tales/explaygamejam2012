@@ -356,8 +356,8 @@ public class GameHolder implements ApplicationListener {
             mHeldCog.setMouseTracking(false);
             mHeldCog.fixToGrid();
 
-            if (mTray.touchInside(Gdx.input.getX() * 2,
-                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
+            if (mTray.touchInside(InputHandler.getScreenX(),
+                    InputHandler.getScreenY())) {
                 mLogic.playerPlacedCog(false);
                 mGraph.removeCog(mHeldCog);
                 mTray.addCog(mHeldCog);
@@ -391,21 +391,21 @@ public class GameHolder implements ApplicationListener {
     }
 
     private void doSelectingEvents() {
-        int gridX = getGridX(Gdx.input.getX() * 2);
-        int gridY = getGridY((Gdx.graphics.getHeight() - Gdx.input.getY()) * 2);
+        int gridX = getGridX(InputHandler.getScreenX());
+        int gridY = getGridY(InputHandler.getScreenY());
 
         if (!mHoldingCog && Gdx.input.isTouched()) {
-            if (inputInMaskButton(Gdx.input.getX() * 2,
-                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
+            if (inputInMaskButton(InputHandler.getScreenX(),
+                    InputHandler.getScreenY())) {
                 toggleMaskMode();
-            } else if (mTray.touchInside(Gdx.input.getX() * 2,
-                    (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)) {
+            } else if (mTray.touchInside(InputHandler.getScreenX(),
+                    InputHandler.getScreenY())) {
 
                 System.out.println("Selecting cog");
 
                 int size = 5;
 
-                int x = Gdx.input.getX() * 2;
+                int x = InputHandler.getScreenX();
 
                 int rb = 121, b = 326, m = 498, s = 633, t = 732;
 
@@ -427,10 +427,10 @@ public class GameHolder implements ApplicationListener {
                     mLogic.playerSelectedCog(mHeldCog, false);
                 }
             } else {
-                mHeldCog = mGraph.touchOnCog(Gdx.input.getX() * 2,
-                        (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2);
-                int x = Gdx.input.getX() * 2;
-                int y = (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2;
+                mHeldCog = mGraph.touchOnCog(InputHandler.getScreenX(),
+                        InputHandler.getScreenY());
+                int x = InputHandler.getScreenX();
+                int y = InputHandler.getScreenY();
                 if (mHeldCog != null
                         && !mGridManager.touchInBlock(getGridX(x), getGridY(y),
                                 mLogic.mPlayerID)) {
@@ -443,11 +443,9 @@ public class GameHolder implements ApplicationListener {
                     System.out.println("");
 
                     mLogic.playerSelectedCog(mHeldCog, true);
-                } else if (inputInGrid(Gdx.input.getX() * 2,
-                        (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)
+                } else if (inputInGrid(InputHandler.getScreenX(), InputHandler.getScreenY())
                         && !inputInMaskButton(
-                                Gdx.input.getX() * 2,
-                                (Gdx.graphics.getHeight() - Gdx.input.getY()) * 2)
+                                InputHandler.getScreenX(), InputHandler.getScreenY())
                         && mMaskButtonPressed) {
 
                     toggleGridSquare(gridX, gridY);
