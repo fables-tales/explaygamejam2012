@@ -12,7 +12,7 @@ public class Animator {
 	public List<Sprite> mFrames = new ArrayList<Sprite>();
 	public int mFrameNumber = 0;
 	public int mTick = 0; 
-	public int mFrameSpeed = 3; 
+	public int mFrameSpeed = 5; 
 	public boolean mFalling = false; 
 	
 	public Animator(String baseName, int numberOfFrames, float locationX, float locationY) { 
@@ -47,13 +47,13 @@ public class Animator {
 		}
 		
 		if (mFrameNumber >= mFrames.size()) { 
-			mFrameNumber =  mFrames.size() - 1; 
+			mFrameNumber = mFrames.size() - 1; 
 		}
 	}
 	
 	public void draw(SpriteBatch sb) {
 		
-		System.out.println(mFrameNumber);
+		//System.out.println(mFrameNumber);
 		mFrames.get(mFrameNumber).draw(sb);
     }
 }

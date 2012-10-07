@@ -62,14 +62,14 @@ public class GameHolder implements ApplicationListener {
         Texture t = new Texture(Gdx.files.internal("rack.png"));
         mRackSprite = new Sprite(t);
         mRackSprite.setPosition(800 / 2 - mRackSprite.getWidth() / 2,
-                1280 - mRackSprite.getHeight());
+                1280 - mRackSprite.getHeight() - 3);
 
         t = new Texture(Gdx.files.internal("rackholder.png"));
 
         mRackHolderSprite = new Sprite(t);
         mRackHolderSprite.setPosition(
                 800 / 2 - mRackHolderSprite.getWidth() / 2,
-                1280 - mRackHolderSprite.getHeight());
+                1280 - mRackHolderSprite.getHeight() + 5);
 
         mMaskButtonSprite = new Sprite(ResourceManager.get("maskbutton"));
 
@@ -97,8 +97,8 @@ public class GameHolder implements ApplicationListener {
         mPlayer1Wins = new Sprite(ResourceManager.get("p1wins"));
         mPlayer2Wins = new Sprite(ResourceManager.get("p2wins"));
 
-        mPlayer1Char = new Animator("hh", 27, 800 -240, 370);
-        mPlayer2Char = new Animator("moose", 27, 0,  370);
+        mPlayer1Char = new Animator("hh", 29, 800 -240, 370);
+        mPlayer2Char = new Animator("moose", 29, 0,  370);
         
         mPlayer1Wins.setPosition((800 * 0.5f)
                 - (mPlayer1Wins.getWidth() * 0.5f), (1280 * 0.5f)
@@ -360,7 +360,7 @@ public class GameHolder implements ApplicationListener {
         mLogic.mTotalDriveToScrew += oldScrewAngle - newScrewAngle;
         if (Math.abs(oldScrewAngle - newScrewAngle) > 0.1) {
             mRackSprite.translate((oldScrewAngle - newScrewAngle) * 0.04f, 0);
-            mRackHolderSprite.translate((oldScrewAngle - newScrewAngle) * 0.04f,
+            mRackHolderSprite.translate((oldScrewAngle - newScrewAngle) * 0.04f * 0.5f,
                     0);
             SoundSystem.playWithDelay("Rack", 500);
         }
@@ -384,13 +384,16 @@ public class GameHolder implements ApplicationListener {
                 mTray.addCog(mHeldCog);
             } else if (mGraph.dropCog(mHeldCog) == false) {
                 System.out.println("Dropping failed");
-
+                
                 if (mLogic.mCogWasFromBoard == false) {
                     mGraph.removeCog(mHeldCog);
                     mTray.addCog(mHeldCog);
+                    mLogic.playerFailedToPlaceCog();
                 }
-
-                mLogic.playerFailedToPlaceCog();
+                else { 
+                    mLogic.playerFailedToPlaceCog();
+                	mGraph.dropCog(mHeldCog);             	
+                }
             } else {
                 mLogic.playerPlacedCog(true);
             }
@@ -501,10 +504,10 @@ public class GameHolder implements ApplicationListener {
         	mLogic.newGame();
         	
             mRackSprite.setPosition(800 / 2 - mRackSprite.getWidth() / 2,
-                    1280 - mRackSprite.getHeight());
+                    1280 - mRackSprite.getHeight() - 3);
             mRackHolderSprite.setPosition(
                     800 / 2 - mRackHolderSprite.getWidth() / 2,
-                    1280 - mRackHolderSprite.getHeight());
+                    1280 - mRackHolderSprite.getHeight() + 5);
         }
     }
 

@@ -33,7 +33,10 @@ public class Cog {
 	// we need this for refactoring the graph (probably)
 	public List<Cog> mConnections = new ArrayList<Cog>();
 	public int mSize;	
-
+	
+	public boolean mHighlight = false;
+	public boolean mFailed = false;
+	public boolean mDir;
 	
     public Cog(Sprite s, int size, float a, int id) {    	
         mSprite = s;
@@ -45,13 +48,34 @@ public class Cog {
 	public boolean getIsFixed() {
 		return mIsDrive || mIsScrew; 
 	}
+		
+	public void setFailed(boolean value) { 
+		
+		mFailed = value; 
+		
+		setColor(); 
+	}
+	
+	public boolean getFailed() { 
+		return mFailed; 
+	}
+
+	public void setHighlight(boolean value) { 
+		mHighlight = value; 
+		
+		setColor(); 
+	}
+	
+	public boolean getHighlight() { 
+		return mHighlight; 
+	}
 	
     public float getRadius() { 
     	return (mSprite.getWidth() * 0.5f) - 3f;   	
     }
     
     public float getRadiusIncludingTeeth() { 
-    	return getRadius() + 8f;   	
+    	return getRadius() + 4f;   	
     }    
     
     public float getCenterX() {
@@ -79,8 +103,8 @@ public class Cog {
     	int x = (int)getCenterX(); 
     	int y = (int)getCenterY();
     	
-    	x -= x % 16; 
-    	y -= y % 16;
+    	x -= x % 8; 
+    	y -= y % 8;
     	
     	setCenterX((float)x);
     	setCenterY((float)y); 
@@ -106,7 +130,13 @@ public class Cog {
         
         if (b == false) mCanPlace  = false; 
         
-        mSprite.setColor(1, 1, 1, b && mCanPlace == false ? 0.5f : 1f); 
+        setColor(); 
+    }
+    
+    private void setColor() { 
+    	if (mFailed == true) mSprite.setColor(0.65f, 0.1f, 0.1f, mMouseTracking && mCanPlace == false ? 0.5f : 1f);
+    	else if (mHighlight == true) mSprite.setColor(0.1f, 0.65f, 0.1f, mMouseTracking && mCanPlace == false ? 0.5f : 1f);
+		else  mSprite.setColor(1f, 1f, 1f, mMouseTracking && mCanPlace == false ? 0.5f : 1f);
     }
     
     public void promoteToDrive() {
@@ -162,6 +192,7 @@ public class Cog {
 		    SoundSystem.playWithDelay("canplace", 500);
 		}
 		
-		mSprite.setColor(1, 1, 1, mCanPlace == false ? 0.5f : 1f); 
+		setColor(); 
+		// mSprite.setColor(1, 1, 1, mCanPlace == false ? 0.5f : 1f); 
 	}
 }

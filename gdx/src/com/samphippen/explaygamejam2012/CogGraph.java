@@ -40,7 +40,7 @@ public class CogGraph {
 		mScrew.promoteToScrew();     
 		
 		mScrew.setCenterX(800 * 0.5f);
-		mScrew.setCenterY((1280-75) - 123);
+		mScrew.setCenterY((1280-75) - 133);
 		//mScrew.setCenterY((1280-75) - 123);  
 		mScrew.fixToGrid(); 
 
@@ -74,14 +74,19 @@ public class CogGraph {
 	
 	public boolean checkDropCog(Cog cog) { 
 
+		//cog.setFailed(false);
+		
 		// this is possibly not the best way to do this?!
 		mPossibleConnetions.clear();
 
 		// ***********  find all connecting cogs *********** 
 
 		for (int i = 0; i < mCogs.size(); i++) {
-			Cog other = mCogs.get(i);
-
+			Cog other = mCogs.get(i);			
+			
+			other.setHighlight(false);
+			other.setFailed(false);
+			
 			if (other == cog)
 				continue;
 
@@ -92,21 +97,41 @@ public class CogGraph {
 
 		// *********** find a suitable spot *********** 
 		
+		boolean hasFailed = false; 
 		for (int i = 0; i < mPossibleConnetions.size(); i++) {
 			Cog other = mPossibleConnetions.get(i);
 
 			if (cog.isOverlapping(other) == true) {
+			
+				cog.setFailed(true); 
+				other.setFailed(true);
 				
 				// THIS NEEDS BETTER(ING) 
-				return false;
+				hasFailed = true; 
 			}
 		}
 		
-		return mPossibleConnetions.size() > 0; 
+		if (hasFailed == true) return false; 
+		
+		for (int i = 0; i < mPossibleConnetions.size(); i++) {
+			Cog other = mPossibleConnetions.get(i);
+
+			other.setHighlight(true);
+		}
+		
+		boolean success = mPossibleConnetions.size() > 0; 
+		
+		if (success == true) { 
+			cog.setHighlight(true);
+		}
+		
+		return success; 
 	}
 
 	public boolean dropCog(Cog cog) {
 
+		cog.setFailed(false);
+		
 		System.out.println("Drop Cog " + cog.CogID);
 		
 		// this is possibly not the best way to do this?!
@@ -116,7 +141,10 @@ public class CogGraph {
 
 		for (int i = 0; i < mCogs.size(); i++) {
 			Cog other = mCogs.get(i);
-
+			
+			other.setHighlight(false);
+			other.setFailed(false);
+			
 			if (other == cog)
 				continue;
 
@@ -400,7 +428,7 @@ public class CogGraph {
 	private boolean propogate(Cog node, boolean dir) {
 
 		node.mVisited = true;
-
+		node.mDir = dir; 
 		boolean accum = true;
 
 		if (mGraph.containsKey(node)) {
@@ -409,12 +437,14 @@ public class CogGraph {
 			for (int i = 0; i < list.size(); i++) {
 				Cog child = list.get(i);
 
-				child.rotate(dir);
-
-				accum &= !child.mVisited;
+				child.rotate(dir);				
 
 				if (child.mVisited == false) {
 					accum &= propogate(child, !dir);
+				}
+				else { 
+					//accum &= !child.mVisited;
+					accum &= !(node.mDir == child.mDir); 
 				}
 			}
 		}
@@ -457,9 +487,11 @@ public class CogGraph {
 
 				Cog child = list.get(i);
 
-				if (dir == true)
+				if (node.mDir == true && child.mDir == false) 
 					shape.setColor(0, 1, 0, 1);
-				else
+				else if (node.mDir == false && child.mDir == true) 
+					shape.setColor(1, 0, 1, 1);
+				else 
 					shape.setColor(1, 0, 0, 1);
 
 				shape.line(node.getCenterX(), node.getCenterY(),
