@@ -53,7 +53,7 @@ public class Animator {
 	
 	public void draw(SpriteBatch sb) {
 		
-		//System.out.println(mFrameNumber);
+		//Logger.println(mFrameNumber);
 		mFrames.get(mFrameNumber).draw(sb);
     }
 }

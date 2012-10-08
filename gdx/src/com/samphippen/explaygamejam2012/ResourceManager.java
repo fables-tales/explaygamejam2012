@@ -39,7 +39,7 @@ public class ResourceManager {
                     TextureFilter.Linear);
         }
 
-        System.out.println(new Texture(Gdx.files.internal("rolldown.png")));
+        Logger.println(new Texture(Gdx.files.internal("rolldown.png")));
     }
 
     public static void dispose() {

@@ -62,7 +62,7 @@ public class SoundSystem {
 
     public static void playWithDelay(final String string, int timeoutMS) {
         if (mSoundCanPlay.get(string)) {
-            System.out.println("playing " + string);
+            Logger.println("playing " + string);
             mSoundCanPlay.remove(string);
             mSoundCanPlay.put(string, false);
             mSoundEffects.get(string).play();

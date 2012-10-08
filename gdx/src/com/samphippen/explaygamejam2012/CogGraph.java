@@ -57,7 +57,7 @@ public class CogGraph {
 			
 			if (other.isTouchOn(x, y) == true) {
 				
-				System.out.println("Touch On " + other.CogID);
+				Logger.println("Touch On " + other.CogID);
 				
 				removeCog(other);
 				
@@ -132,7 +132,7 @@ public class CogGraph {
 
 		cog.setFailed(false);
 		
-		System.out.println("Drop Cog " + cog.CogID);
+		Logger.println("Drop Cog " + cog.CogID);
 		
 		// this is possibly not the best way to do this?!
 		mPossibleConnetions.clear();
@@ -212,7 +212,7 @@ public class CogGraph {
 
 	private void reverseBindings(Cog cog) {
 
-		System.out.println("Reverse Bindings " + cog.CogID);
+		Logger.println("Reverse Bindings " + cog.CogID);
 		
 		cog.mBindingsReversed = true;
 
@@ -302,7 +302,7 @@ public class CogGraph {
 
 	public void addCog(Cog cog) {
 		
-		System.out.println("Add Cog " + cog.CogID);
+		Logger.println("Add Cog " + cog.CogID);
 		
 		cog.mAngle = 0; 
 		
@@ -313,7 +313,7 @@ public class CogGraph {
 
 		cog.mAngle = 0;
 		
-		System.out.println("Remove Cog " + cog.CogID);
+		Logger.println("Remove Cog " + cog.CogID);
 		
 		// Check any forward bindings
 		if (mGraph.containsKey(cog) == true) {
@@ -365,7 +365,7 @@ public class CogGraph {
 			return false;
 		}
 
-		System.out.println("Remove " + cog.CogID + " from " + parent.CogID);
+		Logger.println("Remove " + cog.CogID + " from " + parent.CogID);
 		
 		// remove the back link 
 		if (cog.mConnections.contains(parent) == true) {
@@ -381,7 +381,7 @@ public class CogGraph {
 
 		if (mGraph.containsKey(parent) == false) {
 			
-			System.out.println("Add Node " + parent.CogID);
+			Logger.println("Add Node " + parent.CogID);
 			
 			mGraph.put(parent, new ArrayList<Cog>());
 		}
@@ -392,7 +392,7 @@ public class CogGraph {
 			return false;
 		}
 
-		System.out.println("Add " + cog.CogID + " to " + parent.CogID);
+		Logger.println("Add " + cog.CogID + " to " + parent.CogID);
 		
 		// we need a back link so we can refactor the graph 
 		if (cog.mConnections.contains(parent) == false) {

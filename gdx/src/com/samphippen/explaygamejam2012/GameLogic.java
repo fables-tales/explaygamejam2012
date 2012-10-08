@@ -17,7 +17,7 @@ public class GameLogic {
 	private static GameLogic sInstance;
 	
 	public static GameLogic getInstance() {
-	    System.out.println("called");
+	    Logger.println("called");
 	    if (sInstance == null) sInstance = new GameLogic();
 	    return sInstance;
 	}
@@ -30,7 +30,7 @@ public class GameLogic {
     
     private GameLogic() {
         Texture t = ResourceManager.get("rolldown");
-        System.out.println(t);
+        Logger.println(t);
         mRollDownSprite = new Sprite(t);
         mRollDownSprite.setPosition(0, (1280));
     }
@@ -144,7 +144,7 @@ public class GameLogic {
 
 		if (mTotalDriveToScrew >= MAX_DRIVE_TO_SCREW) {
 			// player 1 wins!
-			System.out.println("Player 1 WINS!!!!"); 
+			Logger.println("Player 1 WINS!!!!"); 
 			mState = TurnStage.GameOver;
 			SoundSystem.playGameOver();
 			mPlayerID = 0; 
@@ -152,7 +152,7 @@ public class GameLogic {
 		}
 		else if (mTotalDriveToScrew <= -MAX_DRIVE_TO_SCREW) {
 			// player 1 wins!
-			System.out.println("Player 2 WINS!!!!"); 
+			Logger.println("Player 2 WINS!!!!"); 
 			mState = TurnStage.GameOver;
 			SoundSystem.playGameOver();
 			mPlayerID = 1; 

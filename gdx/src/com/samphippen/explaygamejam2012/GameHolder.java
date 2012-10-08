@@ -51,9 +51,12 @@ public class GameHolder implements ApplicationListener {
 
     @Override
     public void create() {
+    	
+    	Logger.mIsLogging = mDebugging;  
+    	
         ResourceManager.loadResources();
         SoundSystem.initialize();
-        System.out.println("create");
+        Logger.println("create");
         mLogic = GameLogic.getInstance();
 
         mTray = new Tray();
@@ -372,7 +375,7 @@ public class GameHolder implements ApplicationListener {
 
         if (mHoldingCog && !Gdx.input.isTouched()) {
 
-            System.out.println("Dropping cog");
+            Logger.println("Dropping cog");
 
             mHeldCog.setMouseTracking(false);
             mHeldCog.fixToGrid();
@@ -383,7 +386,7 @@ public class GameHolder implements ApplicationListener {
                 mGraph.removeCog(mHeldCog);
                 mTray.addCog(mHeldCog);
             } else if (mGraph.dropCog(mHeldCog) == false) {
-                System.out.println("Dropping failed");
+                Logger.println("Dropping failed");
                 
                 if (mLogic.mCogWasFromBoard == false) {
                     mGraph.removeCog(mHeldCog);
@@ -400,8 +403,8 @@ public class GameHolder implements ApplicationListener {
                 mGraph.refactorForward();
             }
 
-            System.out.println("");
-            System.out.println("");
+            Logger.println("");
+            Logger.println("");
 
             mLastCog = mHeldCog;
             mHeldCog = null;
@@ -432,7 +435,7 @@ public class GameHolder implements ApplicationListener {
             } else if (mTray.touchInside(InputHandler.getScreenX(),
                     InputHandler.getScreenY())) {
 
-                System.out.println("Selecting cog");
+                Logger.println("Selecting cog");
 
                 int size = 5;
 
@@ -471,13 +474,13 @@ public class GameHolder implements ApplicationListener {
                 int y = InputHandler.getScreenY();
 
                 if (mHeldCog != null && !mGridManager.touchInBlock(getGridX(x), getGridY(y), mLogic.mPlayerID)) {
-                    System.out.println("Picking up cog");
+                    Logger.println("Picking up cog");
 
                     mHoldingCog = true;
                     mHeldCog.setMouseTracking(true);
 
-                    System.out.println("");
-                    System.out.println("");
+                    Logger.println("");
+                    Logger.println("");
 
                     mLogic.playerSelectedCog(mHeldCog, true);
                 } 
@@ -548,7 +551,7 @@ public class GameHolder implements ApplicationListener {
     private void toggleMaskMode() {
         if (mMaskButtonCountDown <= 0) {
             mMaskButtonPressed = !mMaskButtonPressed;
-            System.out.println("triggering " + mMaskButtonPressed);
+            Logger.println("triggering " + mMaskButtonPressed);
             mMaskButtonCountDown = 10;
             if (mMaskButtonPressed == true) {
                 mGridManager.clearPlayer(mLogic.mPlayerID);

@@ -134,8 +134,8 @@ public class Cog {
     }
     
     private void setColor() { 
-    	if (mFailed == true) mSprite.setColor(0.65f, 0.1f, 0.1f, mMouseTracking && mCanPlace == false ? 0.5f : 1f);
-    	else if (mHighlight == true) mSprite.setColor(0.1f, 0.65f, 0.1f, mMouseTracking && mCanPlace == false ? 0.5f : 1f);
+    	if (mFailed == true) mSprite.setColor(0.65f, 0.3f, 0.3f, mMouseTracking && mCanPlace == false ? 0.5f : 1f);
+    	else if (mHighlight == true) mSprite.setColor(0.3f, 0.65f, 0.3f, mMouseTracking && mCanPlace == false ? 0.5f : 1f);
 		else  mSprite.setColor(1f, 1f, 1f, mMouseTracking && mCanPlace == false ? 0.5f : 1f);
     }
     

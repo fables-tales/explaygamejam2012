@@ -73,13 +73,13 @@ public class GridManager {
 
     public void hideCandidateSquares(int currentPlayerID) {
         int gridIndex;
-        System.out.println("hiding1");
+        Logger.println("hiding1");
         mTouchedSquares = 0;
         for (int x = 0; x < SQUARES_PER_ROW; x++) {
             int y = mSquareTouchY;
             gridIndex = x + y * SQUARES_PER_ROW;
 
-            System.out.println("hiding");
+            Logger.println("hiding");
             setSpriteOpacity(currentPlayerID, gridIndex, 0);
 
         }
@@ -166,14 +166,14 @@ public class GridManager {
             Sprite gridSprite = getCurrentGridSprites(playerID).get(i);
             Color sc = gridSprite.getColor();
             if (sc.a >= 0.995) {
-                //System.out.println("alpha");
+                //Logger.println("alpha");
                 sc.a = 0.441f;
                 gridSprite.setColor(sc);
             }
             gridSprite.draw(sb);
             sc = gridSprite.getColor();
             if (Math.abs(sc.a-0.441) < 0.01) {
-                //System.out.println("alpha");
+                //Logger.println("alpha");
                 sc.a = 1f;
                 gridSprite.setColor(sc);
             }
@@ -189,7 +189,7 @@ public class GridManager {
     }
 
     public void clearPlayer(int mPlayerID) {
-        System.out.println(mPlayerID);
+        Logger.println(mPlayerID);
         this.hideCandidateSquares(mPlayerID);
         for (int y = 0; y < NUMBER_OF_ROWS; y++) {
             for (int x = 0; x < SQUARES_PER_ROW; x++) {
