@@ -119,7 +119,7 @@ public class GameHolder implements ApplicationListener {
 
     @Override
     public void dispose() {
-        ResourceManager.dispose();
+        //ResourceManager.dispose();
     }
 
     public void draw() {
@@ -389,6 +389,7 @@ public class GameHolder implements ApplicationListener {
                     mGraph.removeCog(mHeldCog);
                     mTray.addCog(mHeldCog);
                     mLogic.playerFailedToPlaceCog();
+                    mGraph.refactorForward();
                 }
                 else { 
                     mLogic.playerFailedToPlaceCog();
@@ -396,6 +397,7 @@ public class GameHolder implements ApplicationListener {
                 }
             } else {
                 mLogic.playerPlacedCog(true);
+                mGraph.refactorForward();
             }
 
             System.out.println("");
