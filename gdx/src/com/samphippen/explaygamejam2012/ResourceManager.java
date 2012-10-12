@@ -22,8 +22,8 @@ public class ResourceManager {
                 new Texture(Gdx.files.internal("maskbutton.png")));
         mTextures.put("maskbuttonpressed",
                 new Texture(Gdx.files.internal("maskbuttonpressed.png")));
-        mTextures.put("p1wins", new Texture(Gdx.files.internal("p1_wins.png")));
-        mTextures.put("p2wins", new Texture(Gdx.files.internal("p2_wins.png")));
+        mTextures.put("player1", new Texture(Gdx.files.internal("player1.png")));
+        mTextures.put("player2", new Texture(Gdx.files.internal("player2.png")));
         mTextures.put("rolldown",
                 new Texture(Gdx.files.internal("dropdown.png")));
         mTextures.put("background",
@@ -39,7 +39,7 @@ public class ResourceManager {
                     TextureFilter.Linear);
         }
 
-        Logger.println(new Texture(Gdx.files.internal("rolldown.png")));
+        //Logger.println(new Texture(Gdx.files.internal("rolldown.png")));
     }
 
     public static void dispose() {

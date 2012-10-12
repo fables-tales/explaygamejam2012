@@ -48,7 +48,16 @@ public class GridManager {
         s.setPosition(mWidth / SQUARES_PER_ROW * x + mXOffset, mHeight / NUMBER_OF_ROWS * y
                 + mYOffset);
         s.setSize(mWidth / SQUARES_PER_ROW, mHeight / NUMBER_OF_ROWS);
-        s.setColor(1, i, 1, 0);
+        
+        float colorScale = 1f/ 255f;
+        
+        if (i == 0) { 
+        	s.setColor(colorScale * 247, colorScale * 120, colorScale * 34, 0);
+        }
+        else { 
+        	s.setColor(colorScale * 0, colorScale * 143, colorScale * 70, 0);
+        }
+        
         return s;
     }
 

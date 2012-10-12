@@ -10,7 +10,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Tray {
-    public static final int MAX_COGS_EVER = 40;
+    public static final int MAX_COGS_REALLY_BIG = 2;
+    public static final int MAX_COGS_BIG = 4;
+    public static final int MAX_COGS_MEDIUM = 8;
+    public static final int MAX_COGS_SMALL = 12;
+    public static final int MAX_COGS_TINY = 14;    
 
     private Sprite mSprite;
     private Sprite mWheelCoverSprite;
@@ -28,29 +32,31 @@ public class Tray {
         mSprite = new Sprite(ResourceManager.get("tray"));
         mWheelCoverSprite = new Sprite(ResourceManager.get("wheelcover"));
         
-        for (int i = 0; i < MAX_COGS_EVER / 5; i++) {
+        for (int i = 0; i < MAX_COGS_REALLY_BIG; i++) {
         	mCogs_ReallyBig.add(Cog.getCog(5));
         }
 
-        for (int i = 0; i < MAX_COGS_EVER / 5; i++) {
+        for (int i = 0; i < MAX_COGS_BIG; i++) {
         	mCogs_Big.add(Cog.getCog(4));
         }
         
-        for (int i = 0; i < MAX_COGS_EVER / 5; i++) {
+        for (int i = 0; i < MAX_COGS_MEDIUM; i++) {
         	mCogs_Medium.add(Cog.getCog(3));
         }
 
-        for (int i = 0; i < MAX_COGS_EVER / 5; i++) {
+        for (int i = 0; i < MAX_COGS_SMALL; i++) {
         	mCogs_Small.add(Cog.getCog(2));
         }
 
-        for (int i = 0; i < MAX_COGS_EVER / 5; i++) {
+        for (int i = 0; i < MAX_COGS_TINY; i++) {
         	mCogs_Tiny.add(Cog.getCog(1));
         }
 
     }
 
 	public void addCog(Cog cog) {
+		
+		cog.reset(); 
 		
 		if (cog.mSize == 1) mCogs_Tiny.add(cog);
 		else if (cog.mSize == 2) mCogs_Small.add(cog);
@@ -66,6 +72,8 @@ public class Tray {
 			Cog cog = cogs.get(i); 
 			
 			if (cog.getIsFixed() == false) { 
+				
+				cog.reset(); 
 				
 				addCog(cog); 				
 			}

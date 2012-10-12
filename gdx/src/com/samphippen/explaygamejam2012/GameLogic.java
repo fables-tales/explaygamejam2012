@@ -25,14 +25,25 @@ public class GameLogic {
 	public int mAnimationFrame = 0; 
 	public float mTotalDriveToScrew;
 
-    private int mRollDownFrame;
+    public int mRollDownFrame;
     public Sprite mRollDownSprite;
+    public Sprite mPlayer1;
+    public Sprite mPlayer2;
     
+    public boolean mShouldPlaySoundOnNextFrame = false;
+    
+	
     private GameLogic() {
         Texture t = ResourceManager.get("rolldown");
         Logger.println(t);
         mRollDownSprite = new Sprite(t);
-        mRollDownSprite.setPosition(0, (1280));
+        mRollDownSprite.setPosition(0, (GameHolder.CanvasSizeY));
+        
+        mPlayer1 = new Sprite(ResourceManager.get("player1"));
+        mPlayer2 = new Sprite(ResourceManager.get("player2"));
+        
+        mPlayer1.setPosition((GameHolder.CanvasSizeX * 0.5f) - (mPlayer1.getWidth() * 0.5f), (GameHolder.CanvasSizeY));
+        mPlayer2.setPosition((GameHolder.CanvasSizeX * 0.5f) - (mPlayer2.getWidth() * 0.5f), (GameHolder.CanvasSizeY));
     }
 	
 	private void resetMove() { 
@@ -53,7 +64,7 @@ public class GameLogic {
 	public void sartGame() { 
 		mState = TurnStage.GameStart; 
 		mPlayerID = 1; 
-		mTotalDriveToScrew = 0; 
+		mTotalDriveToScrew = 0; 		
 		
 		resetMove();
 	}
@@ -83,6 +94,8 @@ public class GameLogic {
 	public void placedGrid() {
 	    mState = TurnStage.Animating;
 	    SoundSystem.playBetweenMusic();
+		SoundSystem.playWithDelay("hasplaced2", 100);		
+		mShouldPlaySoundOnNextFrame = true; 
 	    resetMove();
 	}
 	
@@ -101,7 +114,9 @@ public class GameLogic {
 				// the cog has been moved
 				mState = TurnStage.Animating;
 				SoundSystem.playBetweenMusic();
-				SoundSystem.playWithDelay("hasplaced", 100);
+				SoundSystem.playWithDelay("hasplaced2", 100);
+				
+				mShouldPlaySoundOnNextFrame = true; 
 			}
 		}
 		else if (!mCogWasFromBoard && !ontoBoard)
@@ -114,14 +129,18 @@ public class GameLogic {
 			// the cog started on the board and ended in the tray
 			mState = TurnStage.Animating;
 			SoundSystem.playBetweenMusic();
-			SoundSystem.playWithDelay("hasplaced", 100);			
+			SoundSystem.playWithDelay("hasplaced2", 100);	
+			
+			mShouldPlaySoundOnNextFrame = true; 
 		}
 		else 
 		{
 			// the cog started in the tray and ended on the board 
 			mState = TurnStage.Animating;
 			SoundSystem.playBetweenMusic();
-			SoundSystem.playWithDelay("hasplaced", 100);
+			SoundSystem.playWithDelay("hasplaced2", 100);
+			
+			mShouldPlaySoundOnNextFrame = true; 
 		}
 		
 		resetMove(); 
@@ -132,6 +151,8 @@ public class GameLogic {
 			// the cog has been moved back to its original position
 			mSeletedCog.setCenterX(mCogOriginalX);
 			mSeletedCog.setCenterY(mCogOriginalY); 
+			
+			SoundSystem.playWithDelay("hasplaced2", 100);
 		}
 		
 		mState = TurnStage.WaitingForPlayer;
@@ -141,9 +162,13 @@ public class GameLogic {
 	
 	public void animationTick() {
 		mAnimationFrame++; 
-
+		mShouldPlaySoundOnNextFrame = false; 
+		
 		if (mTotalDriveToScrew >= MAX_DRIVE_TO_SCREW) {
 			// player 1 wins!
+			SoundSystem.stopGrinding();	
+			SoundSystem.stopSound("Rack");  	
+			
 			Logger.println("Player 1 WINS!!!!"); 
 			mState = TurnStage.GameOver;
 			SoundSystem.playGameOver();
@@ -152,15 +177,19 @@ public class GameLogic {
 		}
 		else if (mTotalDriveToScrew <= -MAX_DRIVE_TO_SCREW) {
 			// player 1 wins!
+			SoundSystem.stopGrinding();	
+			SoundSystem.stopSound("Rack");  	
+			
 			Logger.println("Player 2 WINS!!!!"); 
 			mState = TurnStage.GameOver;
 			SoundSystem.playGameOver();
 			mPlayerID = 1; 
 			mAnimationFrame = 0; 
 		}
-		else if (mAnimationFrame > COG_MOVE_FRAMES) { 
+		else if (mAnimationFrame > COG_MOVE_FRAMES) {             
 			mState = TurnStage.RollDownStart;
-			SoundSystem.stopGrinding();
+			SoundSystem.stopGrinding();	
+			SoundSystem.stopSound("Rack");  			
 		}
 	}
 	
@@ -175,18 +204,37 @@ public class GameLogic {
         float y = 2*(t*t);
         mRollDownSprite.setPosition(0, y);
         
+        mPlayer1.setPosition((GameHolder.CanvasSizeX * 0.5f)
+                - (mPlayer1.getWidth() * 0.5f), y + 200);
+        mPlayer2.setPosition((GameHolder.CanvasSizeX * 0.5f)
+                - (mPlayer1.getWidth() * 0.5f), y + 200);
+       
         if (mRollDownFrame == 60) {
             mPlayerID = mPlayerID == 0 ? 1 : 0;
             mState = TurnStage.RollDownWaiting;
         } else if (mRollDownFrame == 120) {
             mState = TurnStage.NextPlayer;
-        }
-        
+        }       
+    }
+    
+    public void setPlayerCogsToPausePosition() {
+    		
+        mPlayer1.setPosition((GameHolder.CanvasSizeX * 0.5f)
+                - (mPlayer1.getWidth() * 0.5f), 200);
+        mPlayer2.setPosition((GameHolder.CanvasSizeX * 0.5f)
+                - (mPlayer1.getWidth() * 0.5f), 200);    	
     }
     
     public void rollDownWaitingTouched() {
         mState = TurnStage.RollDownEnd;
 
     }
+
+	public void hidePlayerCogs() {
+        mPlayer1.setPosition((GameHolder.CanvasSizeX * 0.5f)
+                - (mPlayer1.getWidth() * 0.5f), GameHolder.CanvasSizeY);
+        mPlayer2.setPosition((GameHolder.CanvasSizeX * 0.5f)
+                - (mPlayer1.getWidth() * 0.5f), GameHolder.CanvasSizeY);    	
+	}
 }
 

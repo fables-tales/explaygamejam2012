@@ -28,7 +28,7 @@ public class CogGraph {
 		mDrive = new Cog(new Sprite(t), 0, 0, 1900);
 		mDrive.promoteToDrive();     
 		
-		mDrive.setCenterX(800 * 0.5f);
+		mDrive.setCenterX(GameHolder.CanvasSizeX * 0.5f);
 		mDrive.setCenterY(80);        
 		mDrive.fixToGrid(); 
 
@@ -39,8 +39,8 @@ public class CogGraph {
 		mScrew = Cog.getCog(1);
 		mScrew.promoteToScrew();     
 		
-		mScrew.setCenterX(800 * 0.5f);
-		mScrew.setCenterY((1280-75) - 133);
+		mScrew.setCenterX(GameHolder.CanvasSizeX * 0.5f);
+		mScrew.setCenterY(GameHolder.CanvasSizeY - 233);
 		//mScrew.setCenterY((1280-75) - 123);  
 		mScrew.fixToGrid(); 
 
@@ -179,6 +179,7 @@ public class CogGraph {
 			}
 		}
 
+		/*
 		if (isAttachedToDrive == true) {
 
 			for (int i = 0; i < mCogs.size(); i++) {
@@ -196,14 +197,16 @@ public class CogGraph {
 				}
 			}
 		} else {
-			
+			*/
 			// we can safely link the cogs in anyway we like? 
 			for (int i = 0; i < mPossibleConnetions.size(); i++) {
 				Cog other = mPossibleConnetions.get(i);
 				
-				add(other, cog);
+				if (other.mVisited == false) {
+					add(other, cog);
+				}
 			}
-		}
+		//}
 		
 		refactorForward(); 
 
@@ -214,7 +217,7 @@ public class CogGraph {
 
 		Logger.println("Reverse Bindings " + cog.CogID);
 		
-		cog.mBindingsReversed = true;
+		cog.mVisited = true;
 
 		// Check any forward bindings
 		if (mGraph.containsKey(cog) == true) {
@@ -225,7 +228,7 @@ public class CogGraph {
 
 				Cog other = list.get(i);
 
-				if (other.mBindingsReversed == false) {
+				if (other.mVisited == false) {
 					
 					remove(cog, other);
 					
@@ -241,7 +244,7 @@ public class CogGraph {
 
 			Cog other = cog.mConnections.get(i);
 
-			if (other.mBindingsReversed == false) {
+			if (other.mVisited == false) {
 
 				remove(other, cog);
 				
@@ -254,8 +257,14 @@ public class CogGraph {
 
 	public boolean refactorForward() {
 
+		mDrive.setFailed(false); 
+		mDrive.setHighlight(false);
+		
+		mScrew.setFailed(false); 
+		mScrew.setHighlight(false);
+		
 		for (int i = 0; i < mCogs.size(); i++) {
-			mCogs.get(i).mBindingsReversed = false;
+			mCogs.get(i).mVisited = false;
 		}
 
 		if (refactorForward_Sub(mDrive) == true) {
@@ -268,34 +277,32 @@ public class CogGraph {
 
 	private boolean refactorForward_Sub(Cog node) {
 
-		node.mBindingsReversed = true;
+		node.mVisited = true;
 
+		// check any backward bindings
+		for (int i = node.mConnections.size() - 1; i >= 0; --i) {
+
+			Cog other = node.mConnections.get(i);
+
+			if (other.mVisited == false) {
+
+				remove(other, node);				
+				//reverseBindings(other);				
+				add(node, other);				
+			}
+		}
+		
 		if (mGraph.containsKey(node)) {
 			List<Cog> list = mGraph.get(node);
 
 			for (int i = 0; i < list.size(); i++) {
 				Cog child = list.get(i);
 
-				if (child.mBindingsReversed == false) {
+				if (child.mVisited == false) {
 					refactorForward_Sub(child);
 				}
 			}
-		}
-		
-		// check any backward bindings
-		for (int i = node.mConnections.size() - 1; i >= 0; --i) {
-
-			Cog other = node.mConnections.get(i);
-
-			if (other.mBindingsReversed == false) {
-
-				remove(other, node);
-				
-				reverseBindings(other);
-				
-				add(node, other);				
-			}
-		}
+		}	
 
 		return true;
 	}
@@ -405,7 +412,9 @@ public class CogGraph {
 	}
 
 	public boolean evaluate() {
-
+		mDrive.reset();
+		mScrew.reset(); 
+		
 		for (int i = 0; i < mCogs.size(); i++) {
 			mCogs.get(i).mVisited = false;
 		}
@@ -421,6 +430,7 @@ public class CogGraph {
 			return true;
 		} else {
 		    SoundSystem.playWithDelay("CogsJammed", 3900);
+		    
 			return false;
 		}
 	}
@@ -456,17 +466,13 @@ public class CogGraph {
 
 		for (int i = 0; i < mCogs.size(); i++) {
 			mCogs.get(i).mVisited = false;
+			//mCogs.get(i).mBindingsReversed = false;
 		}
 
 		renderDebugLines_Sub(shape, mDrive, true);
 
 		for (int i = 0; i < mCogs.size(); i++) {
-			mCogs.get(i).mBindingsReversed = false;
-		}
-
-		for (int i = 0; i < mCogs.size(); i++) {
-			if (mCogs.get(i).mVisited == false
-					&& mCogs.get(i).mBindingsReversed == false) {
+			if (mCogs.get(i).mVisited == false) {
 
 				renderDebugLines_Unconneted(shape, mCogs.get(i));
 			}
@@ -477,7 +483,7 @@ public class CogGraph {
 			boolean dir) {
 		node.mVisited = true;
 
-		boolean accum = true;
+		//boolean accum = true;
 
 		if (mGraph.containsKey(node)) {
 
@@ -497,20 +503,19 @@ public class CogGraph {
 				shape.line(node.getCenterX(), node.getCenterY(),
 						child.getCenterX(), child.getCenterY());
 
-				accum &= !child.mVisited;
-
 				if (child.mVisited == false) {
-					accum &= renderDebugLines_Sub(shape, child, !dir);
+					renderDebugLines_Sub(shape, child, !dir);
 				}
 			}
 		}
 
-		return accum;
+		return true;
 	}
 
 	private void renderDebugLines_Unconneted(ShapeRenderer shape, Cog node) {
-		node.mBindingsReversed = true;
 
+		node.mVisited = true; 
+		
 		if (mGraph.containsKey(node)) {
 
 			List<Cog> list = mGraph.get(node);
@@ -524,7 +529,7 @@ public class CogGraph {
 				shape.line(node.getCenterX(), node.getCenterY(),
 						child.getCenterX(), child.getCenterY());
 
-				if (child.mBindingsReversed == false) {
+				if (child.mVisited == false) {
 					renderDebugLines_Unconneted(shape, child);
 				}
 			}

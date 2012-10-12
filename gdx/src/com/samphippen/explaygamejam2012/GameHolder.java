@@ -4,6 +4,7 @@ import javax.swing.text.MaskFormatter;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,11 +18,15 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GameHolder implements ApplicationListener {
 
+	private boolean mDebugging = false;
+	
+	public static float CanvasSizeX = 800;
+	public static float CanvasSizeY = 1280 - 75; 
+	
     private Camera mCamera;
     private Vector2 mCameraOrigin = new Vector2(0, 0);
 
-    private int mCogTime;
-    private boolean mDebugging = false;
+    private int mCogTime;    
     private ShapeRenderer mDebugShapeRenderer;
     private CogGraph mGraph;
     private GridManager mGridManager;
@@ -36,8 +41,7 @@ public class GameHolder implements ApplicationListener {
     private Sprite mMaskButtonSpritePressed;
     private Sprite mRackSprite;
     private Sprite mRackHolderSprite;
-    private Sprite mPlayer1Wins;
-    private Sprite mPlayer2Wins;
+
     private Sprite mBackgroundSprite;
     private Sprite mSplashSprite;
 
@@ -48,14 +52,21 @@ public class GameHolder implements ApplicationListener {
     private SpriteBatch mSpriteBatch;
     private Tray mTray;
     private boolean mStartupScreen = true;
+	private boolean mJammed = false;
+	private boolean mJammedDir = true;
+	private int mJammedTimer = 0;
+	private boolean mKeyHasBeenReleased = true; 
 
+    
     @Override
-    public void create() {
-    	
+    public void create() {    
+
     	Logger.mIsLogging = mDebugging;  
     	
         ResourceManager.loadResources();
         SoundSystem.initialize();
+        SoundSystem.setMusicVolume(0.45f); // 0.3f); 
+        
         Logger.println("create");
         mLogic = GameLogic.getInstance();
 
@@ -64,15 +75,15 @@ public class GameHolder implements ApplicationListener {
 
         Texture t = new Texture(Gdx.files.internal("rack.png"));
         mRackSprite = new Sprite(t);
-        mRackSprite.setPosition(800 / 2 - mRackSprite.getWidth() / 2,
-                1280 - mRackSprite.getHeight() - 3);
+        mRackSprite.setPosition(CanvasSizeX / 2 - mRackSprite.getWidth() / 2,
+        		CanvasSizeY - mRackSprite.getHeight() - 3);
 
         t = new Texture(Gdx.files.internal("rackholder.png"));
 
         mRackHolderSprite = new Sprite(t);
         mRackHolderSprite.setPosition(
-                800 / 2 - mRackHolderSprite.getWidth() / 2,
-                1280 - mRackHolderSprite.getHeight() + 5);
+        		CanvasSizeX / 2 - mRackHolderSprite.getWidth() / 2,
+        		CanvasSizeY - mRackHolderSprite.getHeight() + 5);
 
         mMaskButtonSprite = new Sprite(ResourceManager.get("maskbutton"));
 
@@ -87,37 +98,29 @@ public class GameHolder implements ApplicationListener {
 
         t = ResourceManager.get("rolldown");
         mSplashSprite = new Sprite(t);
-        mSplashSprite.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        //mSplashSprite.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         mGridManager = new GridManager();
         mSpriteBatch = new SpriteBatch();
         mSpriteBatch.enableBlending();
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
-        mCamera = new OrthographicCamera(800, 1280);
-        mCameraOrigin.set(400, 1280 / 2);
+        mCamera = new OrthographicCamera(CanvasSizeX, CanvasSizeY);
+        mCameraOrigin.set(CanvasSizeX * 0.5f, CanvasSizeY / 2);
 
-        mPlayer1Wins = new Sprite(ResourceManager.get("p1wins"));
-        mPlayer2Wins = new Sprite(ResourceManager.get("p2wins"));
-
-        mPlayer1Char = new Animator("hh", 29, 800 -240, 370);
-        mPlayer2Char = new Animator("moose", 29, 0,  370);
-        
-        mPlayer1Wins.setPosition((800 * 0.5f)
-                - (mPlayer1Wins.getWidth() * 0.5f), (1280 * 0.5f)
-                - (mPlayer1Wins.getHeight() * 0.5f));
-        mPlayer2Wins.setPosition((800 * 0.5f)
-                - (mPlayer2Wins.getWidth() * 0.5f), (1280 * 0.5f)
-                - (mPlayer2Wins.getHeight() * 0.5f));
+        mPlayer1Char = new Animator("hh", 29, CanvasSizeX -240, 270);
+        mPlayer2Char = new Animator("moose", 29, 0,  270);       
 
         mDebugShapeRenderer = new ShapeRenderer();
 
         mLastCog = mGraph.mDrive;
-
+        
         // createTestGraph();
         // createTestGraph2();
 
         mLogic.newGame();
+        
+    	Gdx.input.setCatchBackKey(true); 
     }
 
     @Override
@@ -137,17 +140,21 @@ public class GameHolder implements ApplicationListener {
         mSpriteBatch.setTransformMatrix(traslate);
 
         mSpriteBatch.begin();
+        
+        boolean animateJam = mLogic.mState == TurnStage.Animating && mJammed; 
+        
         mBackgroundSprite.draw(mSpriteBatch);
 
-        mGraph.mDrive.draw(mSpriteBatch);
-        mGraph.mScrew.draw(mSpriteBatch);
+        mGraph.mDrive.draw(mSpriteBatch, animateJam, mJammedDir);
+        mGraph.mScrew.draw(mSpriteBatch, animateJam, mJammedDir);
 
         mTray.preDraw(mSpriteBatch);
-
+        
         for (int i = 0; i < mGraph.mCogs.size(); i++) {
             Cog c = mGraph.mCogs.get(i);
-
-            if (c.getIsFixed() == false) c.draw(mSpriteBatch);
+            
+            if (c == mHeldCog) continue; 
+            if (c.getIsFixed() == false) c.draw(mSpriteBatch, animateJam, mJammedDir);
         }
 
         mRackSprite.draw(mSpriteBatch);
@@ -162,6 +169,10 @@ public class GameHolder implements ApplicationListener {
             mMaskButtonSprite.draw(mSpriteBatch);
         }
         
+        if (mHeldCog != null) { 
+        	mHeldCog.draw(mSpriteBatch); 
+        }
+        
         mPlayer1Char.incrementFrame(); 
         mPlayer1Char.draw(mSpriteBatch);
         
@@ -170,15 +181,12 @@ public class GameHolder implements ApplicationListener {
         
         mLogic.mRollDownSprite.draw(mSpriteBatch);
 
-        //if (mLogic.mState == TurnStage.GameOver) {
-        //    if (mLogic.mPlayerID == 0) {
-        //        mPlayer1Wins.draw(mSpriteBatch);
-        //    } else {
-        //        mPlayer2Wins.draw(mSpriteBatch);
-        //    }
-        //}
-        
-
+        if (mLogic.mPlayerID == 0) { 
+        	mLogic.mPlayer1.draw(mSpriteBatch);         	
+        }
+        else {  
+        	mLogic.mPlayer2.draw(mSpriteBatch);
+        }
         
         mSpriteBatch.end();
 
@@ -193,31 +201,90 @@ public class GameHolder implements ApplicationListener {
 
             mDebugShapeRenderer.end();
         }
+        
+        mJammedTimer++; 
+        
+        if (mJammedTimer > 3) { 
+        	mJammedDir = !mJammedDir;
+        	mJammedTimer = 0; 
+        }
     }
 
     @Override
     public void pause() {
         // TODO Auto-generated method stub
-
+    	mStartupScreen = true; 
+    	SoundSystem.pauseGrinding(); 
+    	SoundSystem.pauseMusic(); 
     }
-
+    
     @Override
     public void render() {
+    	if (Gdx.input.isKeyPressed(Keys.BACK) == true ||
+    		Gdx.input.isKeyPressed(Keys.ESCAPE) == true) 
+    	{
+    		if (mKeyHasBeenReleased == true) {
+	    		if (mStartupScreen == true) { 
+	    			Gdx.app.exit();
+	    		}
+	    		else { 
+	    			pause();     			
+	    		}
+	    		
+	    		mKeyHasBeenReleased = false; 
+    		}
+    	}
+    	else if (Gdx.input.isKeyPressed(Keys.SPACE) == true) { 
+    		if (mKeyHasBeenReleased == true) {    			
+    			mDebugging = !mDebugging;    
+    			Logger.mIsLogging = mDebugging;
+    			mKeyHasBeenReleased = false; 
+    		}
+    	}
+    	else { 
+    		mKeyHasBeenReleased = true;     		
+    	}
+    	
+    	
+
         if (!mStartupScreen) {
             update();
-            draw();
+            draw();            
         } else {
             drawStartupScreen();
         }
     }
 
     private void drawStartupScreen() {
-        if (Gdx.input.isTouched()) {
+    	mLogic.setPlayerCogsToPausePosition(); 
+    	
+    	if (Gdx.input.isTouched()) {
             mStartupScreen = false;
+            SoundSystem.resumeMusic(); 
+            SoundSystem.resumeGrinding(); 
+            mLogic.hidePlayerCogs(); 
         }
 
+        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor((1f / 255f) * 155f, (1f / 255f) * 121f,
+                (1f / 255f) * 71f, 1);
+
+        Matrix4 traslate = new Matrix4().translate(-getCameraOrigin().x,
+                -getCameraOrigin().y, 0);
+
+        mSpriteBatch.setProjectionMatrix(mCamera.combined);
+        mSpriteBatch.setTransformMatrix(traslate);
+        
         mSpriteBatch.begin();
-        mSplashSprite.draw(mSpriteBatch);
+        mSplashSprite.draw(mSpriteBatch);                
+        
+        if (mLogic.mPlayerID == 0) { 
+        	mLogic.mPlayer1.draw(mSpriteBatch);         	
+        }
+        else {  
+        	mLogic.mPlayer2.draw(mSpriteBatch);
+        }
+        
         mSpriteBatch.end();
 
     }
@@ -242,10 +309,15 @@ public class GameHolder implements ApplicationListener {
             mTray.addCogs(mGraph.mCogs);
             mGraph.clear();
             mLogic.sartGame();
+            mLogic.mRollDownFrame = 60; 
+            doRollDown();
             break;
-        case GameStart:
-            // other stuff
-            mLogic.newTurn();
+        case GameStart:        	
+        	// other stuff
+            //mLogic.newTurn();
+            mLogic.mState = TurnStage.RollDownStart;
+            mLogic.mRollDownFrame = 60; 
+            doRollDown();
             break;
         case WaitingForPlayer:
             doSelectingEvents();
@@ -353,19 +425,42 @@ public class GameHolder implements ApplicationListener {
      */
 
     private void doAnimation() {
+    	
+    	if (mLogic.mAnimationFrame <= 1) { 
+    		mGraph.refactorForward();
+    	}
+    	
         mMaskButtonPressed = false;
         float oldScrewAngle = mGraph.mScrew.mAngle;
 
-        mGraph.evaluate();
+        mJammed = !mGraph.evaluate();
+        
+        if (mLogic.mShouldPlaySoundOnNextFrame == true) {
+        	if (mJammed == false) {
+        		SoundSystem.startGrinding();  
+        	}
+        	else { 
+        		SoundSystem.playWithDelay("CogsJammed", 500);
+        	}
+        }
 
         float newScrewAngle = mGraph.mScrew.mAngle;
 
         mLogic.mTotalDriveToScrew += oldScrewAngle - newScrewAngle;
-        if (Math.abs(oldScrewAngle - newScrewAngle) > 0.1) {
+        
+        if (Math.abs(oldScrewAngle - newScrewAngle) >= 1) {
             mRackSprite.translate((oldScrewAngle - newScrewAngle) * 0.04f, 0);
-            mRackHolderSprite.translate((oldScrewAngle - newScrewAngle) * 0.04f * 0.5f,
-                    0);
-            SoundSystem.playWithDelay("Rack", 500);
+            mRackHolderSprite.translate((oldScrewAngle - newScrewAngle) * 0.04f * 0.5f, 0);
+            
+            if (mLogic.mShouldPlaySoundOnNextFrame == true) {
+            	SoundSystem.playWithDelay("Rack", 500);
+            }
+            		
+            if (((oldScrewAngle - newScrewAngle > 0 && mLogic.mTotalDriveToScrew > 0) ||
+            	(oldScrewAngle - newScrewAngle < 0 && mLogic.mTotalDriveToScrew < 0)) &&
+            	Math.abs(mLogic.mTotalDriveToScrew) == mLogic.MAX_DRIVE_TO_SCREW - 600) {            	
+            	SoundSystem.playWithDelay("trumpet2", 300);
+            }
         }
 
         mLogic.animationTick();
@@ -385,6 +480,8 @@ public class GameHolder implements ApplicationListener {
                 mLogic.playerPlacedCog(false);
                 mGraph.removeCog(mHeldCog);
                 mTray.addCog(mHeldCog);
+                mGraph.refactorForward();
+                
             } else if (mGraph.dropCog(mHeldCog) == false) {
                 Logger.println("Dropping failed");
                 
@@ -465,7 +562,8 @@ public class GameHolder implements ApplicationListener {
                     && !inputInMaskButton(InputHandler.getScreenX(), InputHandler.getScreenY())
                     && mMaskButtonPressed) {
 
-                toggleGridSquare(gridX, gridY);
+                toggleGridSquare(gridX, gridY);                             
+                
             }
             else {
                 mHeldCog = mGraph.touchOnCog(InputHandler.getScreenX(),
@@ -497,10 +595,15 @@ public class GameHolder implements ApplicationListener {
 
         mLogic.endGameTick();
         
-        mPlayer1Char.mFalling = mLogic.mPlayerID == 0;
-        mPlayer2Char.mFalling = mLogic.mPlayerID == 1; 
+        if (mLogic.mAnimationFrame == 1) { 
+        	mGridManager.reset(); 
+        }
+        else if (mLogic.mAnimationFrame > 360) {
+	        mPlayer1Char.mFalling = mLogic.mPlayerID == 0;
+	        mPlayer2Char.mFalling = mLogic.mPlayerID == 1; 
+    	}
         
-        if (mLogic.mAnimationFrame > 60 && Gdx.input.isTouched()) {
+        if (mLogic.mAnimationFrame > 480 && Gdx.input.isTouched()) {
         	mGridManager.reset(); 
         	
         	mPlayer1Char.reset(); 
@@ -508,11 +611,11 @@ public class GameHolder implements ApplicationListener {
         	
         	mLogic.newGame();
         	
-            mRackSprite.setPosition(800 / 2 - mRackSprite.getWidth() / 2,
-                    1280 - mRackSprite.getHeight() - 3);
+            mRackSprite.setPosition(CanvasSizeX / 2 - mRackSprite.getWidth() / 2,
+            		CanvasSizeY - mRackSprite.getHeight() - 3);
             mRackHolderSprite.setPosition(
-                    800 / 2 - mRackHolderSprite.getWidth() / 2,
-                    1280 - mRackHolderSprite.getHeight() + 5);
+            		CanvasSizeX / 2 - mRackHolderSprite.getWidth() / 2,
+            		CanvasSizeY - mRackHolderSprite.getHeight() + 5);
         }
     }
 
@@ -530,7 +633,7 @@ public class GameHolder implements ApplicationListener {
 
     private boolean inputInGrid(int x, int y) {
         // rack and tray both occupy 64 pixels of space at the top of the screen
-        return y > 64 && y < 1280 - 64;
+        return y > 64 && y < CanvasSizeY - 64;
     }
 
     private boolean inputInMaskButton(int x, int y) {

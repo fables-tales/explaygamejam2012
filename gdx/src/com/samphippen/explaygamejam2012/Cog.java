@@ -44,6 +44,16 @@ public class Cog {
         mAngle = a;
         CogID = id; 
     }
+    
+    public void reset() {
+    	
+    	if (getIsFixed() == false) mAngle = 0;
+    	
+    	mHighlight = false; 
+    	mFailed = false; 
+    	
+    	setColor(); 
+    }
 
 	public boolean getIsFixed() {
 		return mIsDrive || mIsScrew; 
@@ -94,6 +104,19 @@ public class Cog {
     	mSprite.setY(value - (mSprite.getHeight() * 0.5f));   	
     }
     
+    
+    public void draw(SpriteBatch sb, boolean animateJam, boolean jammedDir) {
+    	
+    	if (animateJam == true && mVisited == true) { 
+    		mSprite.setRotation(mAngle + (jammedDir == mDir ? 2 : -2));
+    	}
+    	else { 
+    		mSprite.setRotation(mAngle);
+    	}
+    	
+        mSprite.draw(sb);
+    }
+    
     public void draw(SpriteBatch sb) {
         mSprite.setRotation(mAngle);
         mSprite.draw(sb);
@@ -103,8 +126,8 @@ public class Cog {
     	int x = (int)getCenterX(); 
     	int y = (int)getCenterY();
     	
-    	x -= x % 8; 
-    	y -= y % 8;
+    	x -= x % 2; // 8; 
+    	y -= y % 2; // 8;
     	
     	setCenterX((float)x);
     	setCenterY((float)y); 
@@ -185,12 +208,13 @@ public class Cog {
 	}
 
 	public void setCanPlace(boolean canPlace) {
+				
+		if (mCanPlace != canPlace) {
+		    
+		    SoundSystem.playWithDelay("canplace2", 500);
+		}
 		
 		mCanPlace = canPlace;
-		if (canPlace) {
-		    
-		    SoundSystem.playWithDelay("canplace", 500);
-		}
 		
 		setColor(); 
 		// mSprite.setColor(1, 1, 1, mCanPlace == false ? 0.5f : 1f); 
